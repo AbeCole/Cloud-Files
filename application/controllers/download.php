@@ -19,13 +19,11 @@ class Download extends CI_Controller {
 		$data['page'] = 'download';
 		$data['title'] = 'Download';
 		
-		$file_info = $this->file_model->get_file_path($this->uri->uri_string());
+		$file_info = $this->file_model->get_file_path(rawurldecode($this->uri->uri_string()));
 		
 		if (is_array($file_info)) {
 			
 			if(ini_get('zlib.output_compression')) { ini_set('zlib.output_compression', 'Off');	}
-		
-
 			
 			$this->output
 				->set_content_type('application/force-download') // You could also use ".jpeg" which will have the full stop removed before looking in config/mimes.php
@@ -33,7 +31,7 @@ class Download extends CI_Controller {
 			
 		} else {
 			
-			echo 'There was an error: <br />' . $file_info;
+			echo 'There was an error: <br />' . $file_info . $this->uri->uri_string();
 			
 		}
 	

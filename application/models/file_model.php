@@ -56,11 +56,11 @@ class file_model extends CI_Model {
 			return 'The file requested is invalid';
 		}
 			
-		$path .= $file;
+		$path .= reverse_filter_uri($file);
 		
 		if (!is_file($path)) {
 			
-			return 'The file requested could not be found';
+			return 'The file requested could not be found' . $path;
 			
 		} else {
 			
@@ -81,7 +81,7 @@ class file_model extends CI_Model {
 		
 		if (!is_file($path . $oldfile)) {
 			
-			return 'The file requested could not be found' . $path . '--';
+			return 'The file requested could not be found' . $path;
 			
 		} else {
 			

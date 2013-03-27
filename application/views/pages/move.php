@@ -3,6 +3,7 @@
 <?php echo form_open('file/move'); ?>
 	<label for="name">Select destination</label>
 	<select name="destination">
+		<option value="/">Home</option>
 		<?php echo build_folder_dropdown($folders); ?>
 	</select>
 	

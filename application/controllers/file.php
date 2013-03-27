@@ -25,10 +25,10 @@ class File extends CI_Controller {
 		}
 		$path = $parent . $segs[$i];
 	
-		if ($this->file_model->del_file(rawurldecode($path)) == 'success') {
-			redirect('/home/' . $parent, 'refresh');
+		if (($return = $this->file_model->del_file($path)) == 'success') {
+			redirect('/' . $parent, 'refresh');
 		} else {
-			echo 'qweqwe' . $path;
+			echo $return;
 		}
 	}
 	public function rename($file = '') 
@@ -37,9 +37,9 @@ class File extends CI_Controller {
 		
 			$path = $this->input->post('path', TRUE);
 			if (($return = $this->file_model->rename_file($path . $this->input->post('oldname', TRUE), $path . $name)) == 'success') {
-				redirect('/home/' . $path, 'refresh');
+				redirect('/' . rawurlencode(substr($path,0,-1)), 'refresh');
 			} else {
-				echo 'qweqwe' . $return;
+				echo $return;
 			}
 			
 		}
@@ -68,9 +68,9 @@ class File extends CI_Controller {
 			$path = $this->input->post('path', TRUE);
 			$file = $this->input->post('file', TRUE);
 			if (($return = $this->file_model->move_file($file, $path, $dest)) == 'success') {
-				redirect('/home/' . $dest, 'refresh');
+				redirect('/' . $dest, 'refresh');
 			} else {
-				echo 'qweqwe' . $return;
+				echo $return;
 			}
 			
 		}
@@ -85,7 +85,7 @@ class File extends CI_Controller {
 		
 		$data['path'] = $parent;
 		$data['title'] = 'Move File';
-		$data['file'] = $segs[$i];
+		$data['file'] = rawurldecode($segs[$i]);
 		$data['folders'] = $this->file_model->get_folders();
 		
 		$this->load->helper('form');
@@ -107,7 +107,7 @@ class File extends CI_Controller {
 	
 			$this->load->library('upload', $config);
 	
-			if ( ! $this->upload->do_upload())
+			if ( ! $this->upload->do_upload() )
 			{
 				$error = array('error' => $this->upload->display_errors());
 	
@@ -116,8 +116,8 @@ class File extends CI_Controller {
 			else
 			{
 				$data = array('upload_data' => $this->upload->data());
-	
-				echo 'success' . $config['upload_path'];
+
+				redirect('/' . $dest, 'refresh');
 			}
 			
 		}

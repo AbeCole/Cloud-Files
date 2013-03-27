@@ -29,20 +29,19 @@ class Home extends CI_Controller {
 	}
 	public function view($directory = '')
 	{
-		$data['page'] = 'home-view';
 		$data['title'] = 'Home';
 		$data['username'] = $this->session->userdata('username');
 		
 		$segs = $this->uri->segment_array();
 		
-		$data['parent'] = base_url();
+		$data['parent'] = '';
 		for ($i = 1; $i < count($segs); $i++)
 		{
-		    $data['parent'] .= $segs[$i] . '/';
+		    $data['parent'] .= rawurlencode(reverse_filter_uri($segs[$i])) . '/';
 		}
-		$data['current'] = $segs[$i] . '/';
+		$data['current'] = rawurlencode(reverse_filter_uri($segs[$i])) . '/';
 		
-		$directory = str_replace('home/','',uri_string());
+		$directory = uri_string();
 		
 		$data['files'] = $this->file_model->get_files(urldecode($directory));
 	
@@ -50,6 +49,13 @@ class Home extends CI_Controller {
 		$this->load->view('pages/home', $data);
 		$this->load->view('templates/footer', $data);
 	
+	}
+	public function error() {
+		$data['title'] = "Sorry, we couldn't find the page you were looking for";
+		
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/error', $data);
+		$this->load->view('templates/footer', $data);
 	}
 }
 ?>

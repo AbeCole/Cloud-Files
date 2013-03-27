@@ -178,12 +178,28 @@ body {
 				img {margin: 0 auto;}
 			}
 			a {text-decoration: none;color: #333;}
+			
+		}
+		.edit-col {
+			border-left: none;
+			a, span {display: none;}
 		}
 	}
 	.folder-icon {
-		margin: 0 auto;
-		
+		margin: 0 auto;		
+	}	
+}
+html.js {
+	#cloudbrowser {
+		.edit-row {
+			display: none;
+		}
+		.edit-col {
+			a, span {display: inline;}
+		}
+		td.edit-col {
+			border-left: 1px solid #eee;
+		}
 	}
-	
 }
 #downloadFrame {display: none;}
