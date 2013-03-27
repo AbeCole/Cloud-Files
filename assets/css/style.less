@@ -1,0 +1,189 @@
+/* Eric Meyer's Reset Reloaded */
+/* http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+html {
+	height: 100%;
+}
+body {
+	background: #fff;
+	color: #333;
+	font-family: 'Open Sans', sans-serif;
+	position: relative;
+	min-height: 100%;
+	font-size: 13px;
+	padding: 30px;
+}
+#welcome {
+	width: 300px;
+	height:300px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	padding: 20px;
+	margin: -170px 0 0 -170px;
+	background: #F4F4F4;
+	border-radius: 8px;
+	color: #000;
+	text-align: center;
+	box-shadow: 0px 0px 13px #888;
+	h1 {
+		font-size: 12px;
+		display: block;
+		text-indent: -9999px;
+		height: 100px;
+		width: 135px;
+		background: url('../images/logo.png');
+		margin: 0 auto 30px auto;
+	}
+	input {
+		width: 200px;
+		font-size: 13px;
+		padding: 8px 5px;
+		border-radius: 2px;
+		border: none;
+		background: #fff;
+		box-shadow: 0px 0px 3px black;
+		margin-bottom: 7px;
+		font-size: 10px;
+	}
+	label {
+		display: none;
+	}
+	.intro {
+		margin: 0 0 20px 0;
+	}
+	.error {
+		color: red;
+		margin-bottom: 20px;
+	}
+	#login-submit {
+		display: block;
+		border: 1px solid #333;
+		margin: 0 auto;
+		padding: 7px 0px;
+		text-transform: uppercase;
+		font-size: 11px;;
+		color: #fff;
+		width: 100px;
+		background: #000;
+		box-shadow: none;
+		cursor: pointer;
+		&:hover {
+			box-shadow: inset 0px 0px 8px #fff;
+		}
+	}
+}
+#toolbox {
+	background: #000;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	padding: 20px;
+	color: #fff;
+	a {
+		color: #fff;
+	}
+	#logout {
+		float: right;
+		font-size: 10px;
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+	#tools {
+		padding-top: 20px;
+		a {
+			border: 1px solid #fff;
+			padding: 5px;
+			display: inline-block;
+			font-size: 11px;
+			text-decoration: none;
+		}
+	}
+}
+#cloudbrowser {
+	table {
+		width: 100%;
+		border-right: 1px solid #000;
+		border-bottom: 1px solid #000;
+		border-left: 1px solid #000;
+		thead {
+			background: #bcbcbc;
+			th {
+				text-align: left;
+				padding: 10px;
+			}
+		}
+		tr {
+			&.odd {background: #F4F4F4;}
+			&.folder {
+				cursor: pointer;
+			}
+			&.edit-row {
+				a {
+					padding: 3px 6px;
+					margin-right: 5px;
+					font-size: 11px;
+					border: 1px solid #000; 
+				}
+			}
+		}
+		td {
+			padding: 10px;
+			border-left: 1px solid #eee;
+			&.order {
+				text-align: center;
+				color: #888;
+				border-left: none;
+				img {margin: 0 auto;}
+			}
+			a {text-decoration: none;color: #333;}
+		}
+	}
+	.folder-icon {
+		margin: 0 auto;
+		
+	}
+	
+}
+#downloadFrame {display: none;}
