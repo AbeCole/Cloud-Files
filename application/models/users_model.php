@@ -7,6 +7,17 @@ class users_model extends CI_Model {
 			$this->load->database();
 		}
 	}
+	public function logged_in()
+	{
+		
+		if ($this->session->userdata('logged_in') != TRUE) 
+		{
+				
+			redirect('/login/', 'refresh');
+			
+		}
+		
+	}
 	public function get_users($slug = FALSE)
 	{
 		if (!isset($this->db)) {
@@ -41,3 +52,6 @@ class users_model extends CI_Model {
 		return $this->db->insert('users', $data);
 	}
 }
+
+/* End of file users_model.php */
+/* Location: ./application/models/users_model.php */

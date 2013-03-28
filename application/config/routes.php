@@ -41,7 +41,7 @@ $route['login'] = 'login/index';
 $route['logout'] = 'login/logout';
 $route['download/(:any)'] = 'download/index/$1';
 $route['file/(:any)'] = 'file/$1';
-$route['home/(:any)'] = 'home/view/$1';
+$route['home/(:any)'] = 'home/index/$1';
 $route['default_controller'] = 'home/index';
 $route['404_override'] = 'home/error';
 /* End of file routes.php */

@@ -35,7 +35,7 @@ class Login extends CI_Controller {
 	                	
 	                $this->load->library('session');
 	               	$this->session->set_userdata($userdata);
-					redirect('/', 'refresh');
+					redirect('/home/', 'refresh');
 				} 
 				else 
 				{
@@ -59,4 +59,6 @@ class Login extends CI_Controller {
 		redirect('/', 'refresh');	
 	}
 }
-?>
+
+/* End of file login.php */
+/* Location: ./application/controllers/login.php */

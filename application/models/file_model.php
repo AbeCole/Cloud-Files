@@ -10,85 +10,47 @@ class file_model extends CI_Model {
 	}
 	public function get_files($parent = FALSE)
 	{
+	
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($parent != FALSE) {
-			$path .= $parent;
+		if ($parent != FALSE)
+		{
+		
+			$path .= prep_path($parent);
+			
+			if (!is_dir($path)) 
+			{
+				return 'The directory requested is invalid';
+			}
+			
 		}
 		$files = build_directory_map($path);
 
 		return $files;
+		
 	}
-	public function get_file_path($file = '')
+	public function get_file_path($file_path = '')
 	{
-		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($file == '') {
+	
+		if ($file_path == '') 
+		{
 			return 'The file requested is invalid';
 		}
 		
-		if (substr($file, 0, 9) == 'download/') {
-			$file = substr($file, 9);
-		}			
-		$path .= $file;
+		$path = $this->config->item('cloud_path') . prep_path($file_path);
 		
-		if (!is_file($path)) {
+		if (!is_file($path)) 
+		{
 			
 			return 'The file requested could not be found';
 			
-		} else {
+		} 
+		else 
+		{
 			
 			return array('location' => $path, 'size' => filesize($path));
 			
 		}
-	}
-	public function del_file($file = '')
-	{
-		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($file == '') {
-			return 'The file requested is invalid';
-		}
-			
-		$path .= reverse_filter_uri($file);
 		
-		if (!is_file($path)) {
-			
-			return 'The file requested could not be found' . $path;
-			
-		} else {
-			
-			unlink($path);
-			return 'success';
-			
-		}
-	}
-	public function rename_file($oldfile = '', $newfile = '')
-	{
-		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($oldfile == '') {
-			return 'The file requested is invalid';
-		}
-		
-		if (!is_file($path . $oldfile)) {
-			
-			return 'The file requested could not be found' . $path;
-			
-		} else {
-			
-			rename($path . $oldfile, $path . $newfile);
-			return 'success';
-			
-		}
 	}
 	public function get_folders($exclude = FALSE)
 	{
@@ -104,20 +66,76 @@ class file_model extends CI_Model {
 	public function move_file($file = '', $location = '', $dest = '')
 	{
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if (($file == '') || ($dest == '')) {
+		if (($file == '') || ($dest == '') || ($location == '')) 
+		{
 			return 'The file requested is invalid';
 		}
+		$current_location = $path . prep_path($location) . $file;
+		$new_destination = $path . prep_path($dest);
 		
-		if (!is_file($path . $location . $file)) {
+		if (!is_file($current_location)) 
+		{
 			
-			return 'The file requested could not be found' . $path . $location . '--';
+			return 'The file requested could not be found';
+			
+		} 
+		else if (!is_dir($new_destination)) 
+		{
+			
+			return 'The destination is invalid';
+				
+		}
+		else 
+		{
+			
+			rename($current_location, $new_destination . $file);
+			return 'success';
+			
+		}
+	}
+	public function rename_file($location = '', $oldname = '', $newname = '')
+	{
+		$path = $this->config->item('cloud_path');
+		if ($location == '' || $oldname == '' || $newname == '') 
+		{
+		
+			return 'The file requested is invalid or the new name is empty';
+		
+		}
+		
+		$current_location = $path . prep_path($location) . $oldname;
+		$the_new_name = $path . prep_path($location) . $newname;
+		
+		if (!is_file($current_location)) 
+		{
+			
+			return 'The file requested could not be found' . $current_location;
+			
+		} 
+		else 
+		{
+			
+			rename($current_location, $the_new_name);
+			return 'success';
+			
+		}
+	}
+	public function del_file($file = '')
+	{
+		$path = $this->config->item('cloud_path');
+		if ($file == '') {
+			return 'The file requested is invalid';
+		}
+			
+		$path .= reverse_filter_uri($file);
+		
+		if (!is_file($path)) {
+			
+			return 'The file requested could not be found' . $path;
 			
 		} else {
 			
-			rename($path . $location . $file, $path . $dest . '/' . $file);
+			unlink($path);
 			return 'success';
 			
 		}
@@ -173,13 +191,10 @@ class file_model extends CI_Model {
 			
 		}
 	}
-	public function rename_folder($oldfolder = '', $newfolder = '')
+	public function rename_folder($path = '', $oldname = '', $newname = '')
 	{
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($oldfolder == '') {
+		if ($path == '' || $oldname == '' || $newname == '') {
 			return 'The folder requested is invalid';
 		}
 		
@@ -260,3 +275,6 @@ class file_model extends CI_Model {
         return rmdir($dir); 
 	}
 }
+
+/* End of file file_model.php */
+/* Location: ./application/models/file_model.php */

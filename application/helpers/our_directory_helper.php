@@ -61,19 +61,25 @@ if ( ! function_exists('build_directory_map'))
 
 		return FALSE;
 	}
-	function build_folder_dropdown($folders = array(), $parent = '', $exclude = FALSE) {
+	function build_folder_dropdown($folders = array(), $parents = '', $excludes = FALSE) {
 
 		$return = '';
-		foreach ($folders as $name => $children) : 
+		foreach ($folders as $name => $children) 
+		{
 			
-			if ($exclude == FALSE || $parent . $name != $exclude) :
-				$return .= '<option>' . $parent . $name . '</option>';
-				
-				if (count($children) > 0) : 
-					$return .= build_folder_dropdown($children, $parent . $name . ' -> ', $exclude);
-				endif;
-			endif;
-		endforeach;
+			$value = $parents . rawurlencode($name);
+			
+			if ($excludes == FALSE || $value != $excludes)
+			{
+				$return .= '<option value="' . $value . '/">' . rawurldecode($parents) . $name . '</option>';
+			}
+			
+			if (count($children) > 0)
+			{
+				$return .= build_folder_dropdown($children, $parents . rawurlencode($name) . '/', $excludes);
+			}
+			
+		}
 		
 		return $return;
 		
@@ -90,6 +96,19 @@ if ( ! function_exists('build_directory_map'))
 		$str = rawurlencode(reverse_filter_uri($str));
 		
 		return $str;
+	}
+	function prep_path($str)
+	{
+		if (substr($str, 0, 9) == 'download/')
+		{
+			$str = substr($str, 9);
+		}
+		if (substr($str, 0, 5) == 'home/') 
+		{
+			$str = substr($str, 5);
+		}
+	
+		return rawurldecode($str);	
 	}
 }
 

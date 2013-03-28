@@ -5,8 +5,9 @@
 </div> 
 <div id="content">
 
-	<input type="text" value="<?php echo $file; ?>" name="name" />
+	<input type="text" size="100" value="<?php echo $file; ?>" name="name" />
 	<input type="submit" value="Confirm" />
+	<input type="submit" name="cancel" value="Cancel" />
 	
 	<input type="hidden" value="<?php echo $file; ?>" name="oldname" />
 	<input type="hidden" value="<?php echo $path; ?>" name="path" />
