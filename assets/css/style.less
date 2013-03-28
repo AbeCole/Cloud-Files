@@ -126,12 +126,18 @@ body {
 	}
 	h1 {
 		margin-bottom: 10px;
+		&.no-margin {margin-bottom: 0px;}
 	}
 	.close-option {
 		float: right;
 		font-size: 10px;
 		text-decoration: none;
 		text-transform: uppercase;
+	}
+	small {
+		font-size: 10px;
+		display: block;
+		margin-top: 5px;
 	}
 	#tools {
 		padding-top: 10px;
@@ -217,4 +223,16 @@ html.js {
 	border-bottom: 1px solid #000;
 	border-left: 1px solid #000;
 	padding: 10px;
+	#link-select {
+		width: 100%;
+		background: none;
+		border: none;
+		font-size: 12px;
+		resize: none;
+	}
+	#copy-text {
+		margin-top: 10px;
+		display: block;
+		font-size: 10px;
+	}
 }

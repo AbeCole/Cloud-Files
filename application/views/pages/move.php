@@ -5,14 +5,14 @@
 </div> 
 <div id="content">
 	<select name="destination">
-		<?php if ($path != 'home/') : ?><option value="/">Home</option><?php endif; ?>
-		<?php echo build_folder_dropdown($folders); ?>
+		<?php if ($path != 'home/') : ?><option value="home/">home</option><?php endif; ?>
+		<?php echo build_folder_dropdown($folders, 'home/', rtrim($path, '/')); ?>
 	</select>
 	<input type="submit" value="Confirm" />
+	<input type="submit" name="cancel" value="Cancel" />
 	
 	<input type="hidden" value="<?php echo $path; ?>" name="path" />
 	<input type="hidden" value="<?php echo $file; ?>" name="file" />
 	
 </div>
 <?php echo form_close(); ?>
-

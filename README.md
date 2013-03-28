@@ -3,14 +3,10 @@ Cloud-Files
 
 To-Do:
 
-1. Re-add 'home' namespace
-2. Check all url encoding is done in correct places and most efficiently
-3. Fix design of basic 'non-javascript' editing pages, i.e. upload/move/rename
-4. Add a delete confirmation
+1. Check folder functions (move/rename/delete) for url encoding efficeny and cleanliness
+2. Add get-link feature for folders
 5. Add create folder features
-6. Add multi-delete and multi-download functions.
-7. Enable breadcrumb to link to relative folders
-8. Add get-link feature
+6. Add multi-delete and multi-download functions
 
 
 
