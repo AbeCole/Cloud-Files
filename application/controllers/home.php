@@ -16,9 +16,11 @@ class Home extends CI_Controller {
 	}
 	public function index()
 	{
-		$data['title'] = 'Home';
+	
 		$data['username'] = $this->session->userdata('username');
-		$data['current'] = '';
+		$data['breadcrumb'] = $this->uri->segment_array();
+		$data['title'] = 'Home';
+		$data['current'] = 'home';
 				
 		$data['files'] = $this->file_model->get_files();
 	
@@ -29,21 +31,19 @@ class Home extends CI_Controller {
 	}
 	public function view($directory = '')
 	{
-		$data['title'] = 'Home';
+	
 		$data['username'] = $this->session->userdata('username');
-		
-		$segs = $this->uri->segment_array();
-		
+		$data['breadcrumb'] = $this->uri->segment_array();	
+	
 		$data['parent'] = '';
-		for ($i = 1; $i < count($segs); $i++)
+		for ($i = 1; $i < count($data['breadcrumb']); $i++)
 		{
-		    $data['parent'] .= rawurlencode(reverse_filter_uri($segs[$i])) . '/';
+		    $data['parent'] .= prep_url($data['breadcrumb'][$i]) . '/';
 		}
-		$data['current'] = rawurlencode(reverse_filter_uri($segs[$i])) . '/';
+		$data['current'] = prep_url($data['breadcrumb'][$i]) . '/';
+		$data['title'] = ucfirst(reverse_filter_uri($data['breadcrumb'][$i]));
 		
-		$directory = uri_string();
-		
-		$data['files'] = $this->file_model->get_files(urldecode($directory));
+		$data['files'] = $this->file_model->get_files(rawurldecode(str_replace('home/','',uri_string())));
 	
 		$this->load->view('templates/header', $data);
 		$this->load->view('pages/home', $data);

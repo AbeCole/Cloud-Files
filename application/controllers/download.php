@@ -19,7 +19,7 @@ class Download extends CI_Controller {
 		$data['page'] = 'download';
 		$data['title'] = 'Download';
 		
-		$file_info = $this->file_model->get_file_path(rawurldecode($this->uri->uri_string()));
+		$file_info = $this->file_model->get_file_path(rawurldecode(str_replace('home/','',$this->uri->uri_string())));
 		
 		if (is_array($file_info)) {
 			

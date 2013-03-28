@@ -35,9 +35,9 @@ class File extends CI_Controller {
 	{
 		if (($name = $this->input->post('name', TRUE)) != '') {
 		
-			$path = $this->input->post('path', TRUE);
+			$path = str_replace('home/','',$this->input->post('path', TRUE));
 			if (($return = $this->file_model->rename_file($path . $this->input->post('oldname', TRUE), $path . $name)) == 'success') {
-				redirect('/' . rawurlencode(substr($path,0,-1)), 'refresh');
+				redirect('home/' . rawurlencode(substr($path,0,-1)), 'refresh');
 			} else {
 				echo $return;
 			}
@@ -65,10 +65,10 @@ class File extends CI_Controller {
 	{
 		if (($dest = str_replace(' -> ','/',$this->input->post('destination', TRUE))) != '') {
 		
-			$path = $this->input->post('path', TRUE);
+			$path = str_replace('home/','',$this->input->post('path', TRUE));
 			$file = $this->input->post('file', TRUE);
 			if (($return = $this->file_model->move_file($file, $path, $dest)) == 'success') {
-				redirect('/' . $dest, 'refresh');
+				redirect('home/' . $dest, 'refresh');
 			} else {
 				echo $return;
 			}

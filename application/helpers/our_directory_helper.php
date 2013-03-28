@@ -62,15 +62,15 @@ if ( ! function_exists('build_directory_map'))
 		return FALSE;
 	}
 	function build_folder_dropdown($folders = array(), $parent = '', $exclude = FALSE) {
-	
+
 		$return = '';
 		foreach ($folders as $name => $children) : 
-		
-			if ($exclude == FALSE || $name != $exclude) :
+			
+			if ($exclude == FALSE || $parent . $name != $exclude) :
 				$return .= '<option>' . $parent . $name . '</option>';
 				
 				if (count($children) > 0) : 
-					$return .= build_folder_dropdown($children, $parent . $name . ' -> ');
+					$return .= build_folder_dropdown($children, $parent . $name . ' -> ', $exclude);
 				endif;
 			endif;
 		endforeach;
@@ -81,10 +81,15 @@ if ( ! function_exists('build_directory_map'))
 	function reverse_filter_uri($str)
 	{
 		// Convert entities to programatic characters
-		$good	= array('$',		'(',		')',		'%28',		'%29');
-		$bad	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;');
+		$good	= array('$',		'(',		')',		'%28',		'%29',		' ');
+		$bad	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;',	'%20');
 
 		return str_replace($bad, $good, $str);
+	}
+	function prep_url($str) {
+		$str = rawurlencode(reverse_filter_uri($str));
+		
+		return $str;
 	}
 }
 
