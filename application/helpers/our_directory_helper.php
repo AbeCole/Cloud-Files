@@ -112,6 +112,5 @@ if ( ! function_exists('build_directory_map'))
 	}
 }
 
-
 /* End of file our_directory.php */
 /* Location: ./application/helpers/our_directory.php */

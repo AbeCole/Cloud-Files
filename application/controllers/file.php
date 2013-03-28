@@ -8,68 +8,7 @@ class File extends CI_Controller {
 		$this->load->library('session');
 		$this->load->helper(array('url','number'));
 		
-		if ($this->session->userdata('logged_in') != TRUE) {
-			
-			redirect('/', 'refresh');
-			
-		}
-	}
-	public function delete($file = '') 
-	{
-		$segs = $this->uri->segment_array();
-		
-		$parent = '';
-		for ($i = 3; $i < count($segs); $i++)
-		{
-		    $parent .= $segs[$i] . '/';
-		}
-		$path = $parent . $segs[$i];
-	
-		if (($return = $this->file_model->del_file($path)) == 'success') {
-			redirect('/' . $parent, 'refresh');
-		} else {
-			echo $return;
-		}
-	}
-	public function rename($file = '') 
-	{
-		if (($name = $this->input->post('name', TRUE)) != '') 
-		{
-		
-			$path = $this->input->post('path');
-			if ($this->input->post('cancel') == 'Cancel') 
-			{
-				
-				redirect($path, 'refresh');
-			
-			}
-			
-			if (($return = $this->file_model->rename_file($path, $this->input->post('oldname', TRUE), $name)) == 'success') 
-			{
-				redirect($path, 'refresh');
-			} 
-			else 
-			{
-				echo $return;
-			}
-			
-		}
-		
-		$segs = $this->uri->segment_array();
-		$parent = '';
-		for ($i = 3; $i < count($segs); $i++)
-		{
-		    $parent .= prep_url($segs[$i]) . '/';
-		}
-		
-		$data['title'] = 'Rename File';
-		$data['path'] = $parent;
-		$data['file'] = rawurldecode($segs[$i]);
-		
-		$this->load->helper('form');
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/rename', $data);
-		$this->load->view('templates/footer', $data);
+		$this->users_model->logged_in();
 	}
 	public function move($file = '') 
 	{
@@ -112,6 +51,129 @@ class File extends CI_Controller {
 		$this->load->view('templates/header', $data);
 		$this->load->view('pages/move', $data);
 		$this->load->view('templates/footer', $data);
+	}
+	public function rename($file = '') 
+	{
+		if (($name = $this->input->post('name', TRUE)) != '') 
+		{
+		
+			$path = $this->input->post('path');
+			if ($this->input->post('cancel') == 'Cancel') 
+			{
+				
+				redirect($path, 'refresh');
+			
+			}
+			
+			if (($return = $this->file_model->rename_file($path, $this->input->post('oldname', TRUE), $name)) == 'success') 
+			{
+				redirect($path, 'refresh');
+			} 
+			else 
+			{
+				echo $return;
+			}
+			
+		}
+		
+		$segs = $this->uri->segment_array();
+		$parent = '';
+		for ($i = 3; $i < count($segs); $i++)
+		{
+		    $parent .= prep_url($segs[$i]) . '/';
+		}
+		
+		$data['title'] = 'Rename File';
+		$data['path'] = $parent;
+		$data['file'] = rawurldecode($segs[$i]);
+		
+		$this->load->helper('form');
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/rename', $data);
+		$this->load->view('templates/footer', $data);
+	}
+	public function delete($file = '') 
+	{
+		if (($file = $this->input->post('file', TRUE)) != '') 
+		{
+		
+			$path = $this->input->post('path');
+			if ($this->input->post('cancel') == 'Cancel') 
+			{
+				
+				redirect($path, 'refresh');
+			
+			}
+			
+			if (($return = $this->file_model->delete_file($path, $file)) == 'success') 
+			{
+				redirect($path, 'refresh');
+			} 
+			else 
+			{
+				echo $return;
+			}
+			
+		}
+		
+		$segs = $this->uri->segment_array();
+		$parent = '';
+		for ($i = 3; $i < count($segs); $i++)
+		{
+		    $parent .= prep_url($segs[$i]) . '/';
+		}
+		
+		$data['title'] = 'Delete File';
+		$data['path'] = $parent;
+		$data['file'] = rawurldecode($segs[$i]);
+		
+		$this->load->helper('form');
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/delete', $data);
+		$this->load->view('templates/footer', $data);
+		
+	}
+	
+	public function link($file = '') 
+	{
+		if (($file = $this->input->post('file', TRUE)) != '') 
+		{
+		
+			$path = $this->input->post('path');
+			if ($this->input->post('cancel') == 'Cancel') 
+			{
+				
+				redirect($path, 'refresh');
+			
+			}
+			
+			if (($return = $this->file_model->delete_file($path, $file)) == 'success') 
+			{
+				redirect($path, 'refresh');
+			} 
+			else 
+			{
+				echo $return;
+			}
+			
+		}
+		
+		$segs = $this->uri->segment_array();
+		$parent = '';
+		for ($i = 3; $i < count($segs); $i++)
+		{
+		    $parent .= prep_url($segs[$i]) . '/';
+		}
+		
+		$data['title'] = 'Link for' . $segs[$i];
+		$data['path'] = $parent;
+		$data['file'] = rawurldecode($segs[$i]);
+		
+		$this->load->helper('form');
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/link', $data);
+		$this->load->view('templates/footer', $data);
+		
 	}
 	public function upload($dest = '') 
 	{

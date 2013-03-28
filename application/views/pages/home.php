@@ -1,5 +1,5 @@
 <div id="toolbox">
-	<h1>Welcome, <?php echo $username; ?> <a href="<?php echo base_url("logout"); ?>" class="close-option">Logout</a></h1>
+	<h1>Welcome <?php echo $username; ?> <a href="<?php echo base_url("logout"); ?>" class="close-option">Logout</a></h1>
 	<p id="breadcrumb">Current location: 
 		<?php 
 		$url = '';
@@ -57,12 +57,14 @@
 							if (isset($parent)) {
 								$filestring .= '<a href="' . base_url() . 'file/move/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="move-file">Move</a>
 									<a href="' . base_url() . 'file/rename/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="rename-file">Rename</a>
-									<a href="' . base_url() . 'file/delete/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="delete-file">Delete</a>';
+									<a href="' . base_url() . 'file/delete/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="delete-file">Delete</a>
+									<a href="' . base_url() . 'file/link/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="link-file">Get Link</a>';
 							} else {
 								$filestring .= '
 									<a href="' . base_url() . 'file/move/home/' . rawurlencode($child['name']) . '" class="move-file">Move</a>
 									<a href="' . base_url() . 'file/rename/home/' . rawurlencode($child['name']) . '" class="rename-file">Rename</a>
-									<a href="' . base_url() . 'file/delete/home/' . rawurlencode($child['name']) . '" class="delete-file">Delete</a>';
+									<a href="' . base_url() . 'file/delete/home/' . rawurlencode($child['name']) . '" class="delete-file">Delete</a>
+									<a href="' . base_url() . 'file/link/home/' . rawurlencode($child['name']) . '" class="link-file">Get Link</a>';
 							}
 							
 					$filestring .= '</td>

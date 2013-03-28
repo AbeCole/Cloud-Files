@@ -1,5 +1,5 @@
 <?php
-class file_model extends CI_Model {
+class File_model extends CI_Model {
 
 	public function __construct()
 	{
@@ -17,7 +17,7 @@ class file_model extends CI_Model {
 		
 			$path .= prep_path($parent);
 			
-			if (!is_dir($path)) 
+			if ( ! is_dir($path)) 
 			{
 				return 'The directory requested is invalid';
 			}
@@ -38,7 +38,7 @@ class file_model extends CI_Model {
 		
 		$path = $this->config->item('cloud_path') . prep_path($file_path);
 		
-		if (!is_file($path)) 
+		if ( ! is_file($path)) 
 		{
 			
 			return 'The file requested could not be found';
@@ -55,7 +55,8 @@ class file_model extends CI_Model {
 	public function get_folders($exclude = FALSE)
 	{
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
+		if ( ! is_dir($path)) 
+		{
 			return 'The cloud location is invalid';
 		}
 		
@@ -73,13 +74,13 @@ class file_model extends CI_Model {
 		$current_location = $path . prep_path($location) . $file;
 		$new_destination = $path . prep_path($dest);
 		
-		if (!is_file($current_location)) 
+		if ( ! is_file($current_location)) 
 		{
 			
 			return 'The file requested could not be found';
 			
 		} 
-		else if (!is_dir($new_destination)) 
+		else if ( ! is_dir($new_destination)) 
 		{
 			
 			return 'The destination is invalid';
@@ -106,7 +107,7 @@ class file_model extends CI_Model {
 		$current_location = $path . prep_path($location) . $oldname;
 		$the_new_name = $path . prep_path($location) . $newname;
 		
-		if (!is_file($current_location)) 
+		if ( ! is_file($current_location)) 
 		{
 			
 			return 'The file requested could not be found' . $current_location;
@@ -120,18 +121,18 @@ class file_model extends CI_Model {
 			
 		}
 	}
-	public function del_file($file = '')
+	public function delete_file($location = '', $file = '')
 	{
 		$path = $this->config->item('cloud_path');
-		if ($file == '') {
+		if ($file == '' || $location == '') {
 			return 'The file requested is invalid';
 		}
 			
-		$path .= reverse_filter_uri($file);
+		$path .= prep_path($location) . $file;
 		
-		if (!is_file($path)) {
+		if ( ! is_file($path)) {
 			
-			return 'The file requested could not be found' . $path;
+			return 'The file requested could not be found';
 			
 		} else {
 			
@@ -143,7 +144,7 @@ class file_model extends CI_Model {
 	public function upload_file($file = '', $dest = '') 
 	{
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
+		if ( ! is_dir($path)) {
 			return 'The cloud location is invalid';
 		}
 		if ($dest == '') {
@@ -171,7 +172,7 @@ class file_model extends CI_Model {
 	public function del_folder($folder = '')
 	{
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
+		if ( ! is_dir($path)) {
 			return 'The cloud location is invalid';
 		}
 		if ($folder == '') {
@@ -180,7 +181,7 @@ class file_model extends CI_Model {
 			
 		$path .= $folder;
 		
-		if (!is_dir($path)) {
+		if ( ! is_dir($path)) {
 			
 			return 'The folder requested could not be found ' . $path;
 			
@@ -198,7 +199,7 @@ class file_model extends CI_Model {
 			return 'The folder requested is invalid';
 		}
 		
-		if (!is_dir($path . $oldfolder)) {
+		if ( ! is_dir($path . $oldfolder)) {
 			
 			return 'The file requested could not be found';
 			
@@ -216,14 +217,14 @@ class file_model extends CI_Model {
 	public function move_folder($folder = '', $location = '', $dest = '')
 	{
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
+		if ( ! is_dir($path)) {
 			return 'The cloud location is invalid';
 		}
 		if (($folder == '') || ($dest == '')) {
 			return 'The folder requested is invalid';
 		}
 		
-		if (!is_dir($path . $location . $folder)) {
+		if ( ! is_dir($path . $location . $folder)) {
 			
 			return 'The folder requested could not be found' . $path . $location;
 			
@@ -237,7 +238,7 @@ class file_model extends CI_Model {
 	public function create_folder($file = '', $dest = '') 
 	{
 		$path = $this->config->item('cloud_path');
-		if (!is_dir($path)) {
+		if ( ! is_dir($path)) {
 			return 'The cloud location is invalid';
 		}
 		if ($dest == '') {
@@ -263,13 +264,13 @@ class file_model extends CI_Model {
 		
 	}
 	public function deleteDirectory($dir) { 
-	    if (!file_exists($dir)) return true; 
-	    if (!is_dir($dir) || is_link($dir)) return unlink($dir); 
+	    if ( ! file_exists($dir)) return true; 
+	    if ( ! is_dir($dir) || is_link($dir)) return unlink($dir); 
         foreach (scandir($dir) as $item) { 
             if ($item == '.' || $item == '..') continue; 
-            if (!$this->deleteDirectory($dir . "/" . $item)) { 
+            if ( ! $this->deleteDirectory($dir . "/" . $item)) { 
                 chmod($dir . "/" . $item, 0777); 
-                if (!$this->deleteDirectory($dir . "/" . $item)) return false; 
+                if ( ! $this->deleteDirectory($dir . "/" . $item)) return false; 
             }; 
         } 
         return rmdir($dir); 

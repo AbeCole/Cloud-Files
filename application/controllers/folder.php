@@ -8,11 +8,7 @@ class Folder extends CI_Controller {
 		$this->load->library('session');
 		$this->load->helper(array('url','number'));
 		
-		if ($this->session->userdata('logged_in') != TRUE) {
-			
-			redirect('/', 'refresh');
-			
-		}
+		$this->users_model->logged_in();
 	}
 	public function delete($folder = '') 
 	{
