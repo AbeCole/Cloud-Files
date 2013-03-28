@@ -1,5 +1,5 @@
 <?php
-class users_model extends CI_Model {
+class Users_model extends CI_Model {
 
 	public function __construct()
 	{
@@ -7,9 +7,20 @@ class users_model extends CI_Model {
 			$this->load->database();
 		}
 	}
+	public function logged_in()
+	{
+		
+		if ($this->session->userdata('logged_in') != TRUE) 
+		{
+				
+			redirect('/login/', 'refresh');
+			
+		}
+		
+	}
 	public function get_users($slug = FALSE)
 	{
-		if (!isset($this->db)) {
+		if ( ! isset($this->db)) {
 			if ($slug == 'admin') {
 				return array('username' => 'admin', 'password' => 'letmein');
 			} else {
@@ -41,3 +52,6 @@ class users_model extends CI_Model {
 		return $this->db->insert('users', $data);
 	}
 }
+
+/* End of file users_model.php */
+/* Location: ./application/models/users_model.php */

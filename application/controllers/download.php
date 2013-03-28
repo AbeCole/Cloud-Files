@@ -8,18 +8,14 @@ class Download extends CI_Controller {
 		$this->load->library('session');
 		$this->load->helper('url');
 		
-		if ($this->session->userdata('logged_in') != TRUE) {
-			
-			redirect('/', 'refresh');
-			
-		}
+		$this->users_model->logged_in();
 	}
 	public function index($file = '')
 	{
-		$data['page'] = 'download';
+	
 		$data['title'] = 'Download';
 		
-		$file_info = $this->file_model->get_file_path(rawurldecode(str_replace('home/','',$this->uri->uri_string())));
+		$file_info = $this->file_model->get_file_path(uri_string());
 		
 		if (is_array($file_info)) {
 			
@@ -31,10 +27,12 @@ class Download extends CI_Controller {
 			
 		} else {
 			
-			echo 'There was an error: <br />' . $file_info . $this->uri->uri_string();
+			echo 'There was an error: <br />' . $file_info;
 			
 		}
 	
 	}
 }
-?>
+
+/* End of file download.php */
+/* Location: ./application/controllers/download.php */
