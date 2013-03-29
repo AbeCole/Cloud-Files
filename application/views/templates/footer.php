@@ -1,3 +1,4 @@
+	</div><!-- #page-container -->
 <script type="text/javascript">
 $(document).ready(function() {
 	

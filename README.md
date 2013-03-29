@@ -3,9 +3,6 @@ Cloud-Files
 
 To-Do:
 
-1. Check folder functions (move/rename/delete) for url encoding efficeny and cleanliness
-2. Add get-link feature for folders
-5. Add create folder features
 6. Add multi-delete and multi-download functions
 
 
