@@ -67,7 +67,7 @@ class File_model extends CI_Model {
 	public function move_file($file = '', $location = '', $dest = '')
 	{
 		$path = $this->config->item('cloud_path');
-		if (($file == '') || ($dest == '') || ($location == '')) 
+		if ($file == '' || $dest == '' || $location == '') 
 		{
 			return 'The file requested is invalid';
 		}
@@ -80,7 +80,7 @@ class File_model extends CI_Model {
 			return 'The file requested could not be found';
 			
 		} 
-		else if ( ! is_dir($new_destination)) 
+		elseif ( ! is_dir($new_destination)) 
 		{
 			
 			return 'The destination is invalid';
@@ -89,8 +89,14 @@ class File_model extends CI_Model {
 		else 
 		{
 			
-			rename($current_location, $new_destination . $file);
-			return 'success';
+			if (rename($current_location, $new_destination . $file))
+			{
+				return 'success';
+			}
+			else
+			{
+				return 'There was an error moving the file';
+			}
 			
 		}
 	}
@@ -110,14 +116,26 @@ class File_model extends CI_Model {
 		if ( ! is_file($current_location)) 
 		{
 			
-			return 'The file requested could not be found' . $current_location;
+			return 'The file requested could not be found';
 			
 		} 
+		elseif (is_file($the_new_name)) 
+		{
+			
+			return 'There is already a file with this name';
+			
+		}
 		else 
 		{
 			
-			rename($current_location, $the_new_name);
-			return 'success';
+			if (rename($current_location, $the_new_name))
+			{
+				return 'success';
+			}
+			else 
+			{
+				return 'There was an error renaming the file';
+			}
 			
 		}
 	}
@@ -130,150 +148,197 @@ class File_model extends CI_Model {
 			
 		$path .= prep_path($location) . $file;
 		
-		if ( ! is_file($path)) {
+		if ( ! is_file($path)) 
+		{
 			
 			return 'The file requested could not be found';
 			
-		} else {
-			
-			unlink($path);
-			return 'success';
-			
-		}
-	}
-	public function upload_file($file = '', $dest = '') 
-	{
-		$path = $this->config->item('cloud_path');
-		if ( ! is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($dest == '') {
-			return 'The request destination is invalid';
-		}
-		
-		$config['upload_path'] = $path . $dest;
-
-		$this->load->library('upload', $config);
-
-		if ( ! $this->upload->do_upload($file))
+		} 
+		else 
 		{
-			$error = array('error' => $this->upload->display_errors());
-
-			return $error;
+			
+			if (unlink($path))
+			{
+				return 'success';
+			}
+			else 
+			{
+				return 'There was an error deleting the file';
+			}
+			
 		}
-		else
+	}
+	public function move_folder($name = '', $location = '', $dest = '')
+	{
+		$path = $this->config->item('cloud_path');
+		if ($name == '' || $dest == '' || $location == '') 
 		{
-			$data = array('upload_data' => $this->upload->data());
-
-			return 'success';
-		}
 		
-	}
-	public function del_folder($folder = '')
-	{
-		$path = $this->config->item('cloud_path');
-		if ( ! is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($folder == '') {
-			return 'The file requested is invalid';
-		}
-			
-		$path .= $folder;
-		
-		if ( ! is_dir($path)) {
-			
-			return 'The folder requested could not be found ' . $path;
-			
-		} else {
-			
-			$this->deleteDirectory($path);
-			return 'success';
-			
-		}
-	}
-	public function rename_folder($path = '', $oldname = '', $newname = '')
-	{
-		$path = $this->config->item('cloud_path');
-		if ($path == '' || $oldname == '' || $newname == '') {
 			return 'The folder requested is invalid';
+		
+		}
+		$current_location = $path . prep_path($location) . $name;
+		$new_destination = $path . prep_path($dest);
+		
+		if ( ! is_dir($current_location)) 
+		{
+			
+			return 'The folder requested could not be found';
+			
+		} 
+		else if ( ! is_dir($new_destination)) 
+		{
+			
+			return 'The destination is invalid';
+				
+		}
+		else 
+		{
+			
+			if (rename($current_location, $new_destination . $name))
+			{
+				return 'success';
+			}
+			else
+			{
+				return 'There was an error moving the folder';
+			}
+			
+		}
+	}
+	public function rename_folder($location = '', $oldname = '', $newname = '')
+	{
+		$path = $this->config->item('cloud_path');
+		if ($location == '' || $oldname == '' || $newname == '') 
+		{
+		
+			return 'The folder requested is invalid';
+		
 		}
 		
-		if ( ! is_dir($path . $oldfolder)) {
+		$current_location = $path . prep_path($location) . $oldname;
+		$the_new_name = $path . prep_path($location) . $newname;
+		
+		if ( ! is_dir($current_location)) 
+		{
 			
 			return 'The file requested could not be found';
 			
-		} elseif (is_dir($path . $newfolder)) {
+		} 
+		elseif (is_dir($the_new_name)) 
+		{
 		
 			return 'There is already a folder with this name';
 			
-		} else {
-			
-			rename($path . $oldfolder, $path . $newfolder);
-			return 'success';
-			
-		}
-	}
-	public function move_folder($folder = '', $location = '', $dest = '')
-	{
-		$path = $this->config->item('cloud_path');
-		if ( ! is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if (($folder == '') || ($dest == '')) {
-			return 'The folder requested is invalid';
-		}
-		
-		if ( ! is_dir($path . $location . $folder)) {
-			
-			return 'The folder requested could not be found' . $path . $location;
-			
-		} else {
-			
-			rename($path . $location . $folder, $path . $dest . '/' . $folder);
-			return 'success';
-			
-		}
-	}
-	public function create_folder($file = '', $dest = '') 
-	{
-		$path = $this->config->item('cloud_path');
-		if ( ! is_dir($path)) {
-			return 'The cloud location is invalid';
-		}
-		if ($dest == '') {
-			return 'The request destination is invalid';
-		}
-		
-		$config['upload_path'] = $path . $dest;
-
-		$this->load->library('upload', $config);
-
-		if ( ! $this->upload->do_upload($file))
+		} 
+		else 
 		{
-			$error = array('error' => $this->upload->display_errors());
+			
+			if (rename($current_location, $the_new_name))
+			{
+				return 'success';
+			}
+			else 
+			{
+				return 'There was an error renaming the folder';
+			}
+			
+		}
+	}
+	public function delete_folder($location = '', $folder = '')
+	{
+		$path = $this->config->item('cloud_path');
+		if ($folder == '' || $location == '') 
+		{
+		
+			return 'The folder requested is invalid';
+		
+		}
+			
+		$path .= prep_path($location) . $folder;
+		
+		if ( ! is_dir($path)) 
+		{
+			
+			return 'The folder requested could not be found';
+			
+		} 
+		else 
+		{
+			
+			if ($this->delete_directory($path))
+			{
+				return 'success';
+			}
+			else 
+			{
+				return 'There was an error deleting the folder';
+			}
+			
+		}
+	}
+	public function create_folder($location = '', $name = '') 
+	{
+		$path = $this->config->item('cloud_path');
+		if ($location == '' || $name == '') 
+		{
+		
+			return 'The destination or folder name is invalid';
+		
+		}
+		
+		$path .= prep_path($location);
 
-			return $error;
+		if ( ! is_dir($path))
+		{
+			
+			return 'The destination is invalid';
+			
+		}
+		else if ( strpbrk($name, "\\/?%*:|\"<>") !== FALSE)
+		{
+			
+			return 'The folder name is invalid: ' . $name;
+			
 		}
 		else
 		{
-			$data = array('upload_data' => $this->upload->data());
-
-			return 'success';
+		
+			if (mkdir($path . $name))
+			{
+				return 'success';	
+			}
+			else 
+			{
+				return 'There was an error creating the folder';
+			}
+			
 		}
 		
 	}
-	public function deleteDirectory($dir) { 
+	public function delete_directory($dir) 
+	{ 
+	
 	    if ( ! file_exists($dir)) return true; 
 	    if ( ! is_dir($dir) || is_link($dir)) return unlink($dir); 
-        foreach (scandir($dir) as $item) { 
-            if ($item == '.' || $item == '..') continue; 
-            if ( ! $this->deleteDirectory($dir . "/" . $item)) { 
+	    
+        foreach (scandir($dir) as $item) 
+        { 
+        
+            if ($item == '.' || $item == '..') continue;
+             
+            if ( ! $this->delete_directory($dir . "/" . $item)) 
+            { 
+            
                 chmod($dir . "/" . $item, 0777); 
-                if ( ! $this->deleteDirectory($dir . "/" . $item)) return false; 
-            }; 
+                if ( ! $this->delete_directory($dir . "/" . $item)) return false; 
+                
+            }
+            
         } 
+        
         return rmdir($dir); 
+        
 	}
 }
 

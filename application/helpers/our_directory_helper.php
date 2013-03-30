@@ -61,22 +61,27 @@ if ( ! function_exists('build_directory_map'))
 
 		return FALSE;
 	}
-	function build_folder_dropdown($folders = array(), $parents = '', $excludes = FALSE) {
+	function build_folder_dropdown($folders = array(), $parents = '', $excludes = array(), $select = '') {
+
+		if ( ! is_array($excludes))
+		{
+			$excludes = array($excludes);
+		}
 
 		$return = '';
 		foreach ($folders as $name => $children) 
 		{
 			
-			$value = $parents . rawurlencode($name);
+			$value = $parents . rawurlencode($name) . '/';
 			
-			if ($excludes == FALSE || $value != $excludes)
+			if ( ! in_array($value, $excludes) )
 			{
-				$return .= '<option value="' . $value . '/">' . rawurldecode($parents) . $name . '</option>';
-			}
+				$return .= '<option value="' . $value . '"' . ($select == $value ? ' selected' : '') . '>' . rawurldecode($parents) . $name . '</option>';
 			
-			if (count($children) > 0)
-			{
-				$return .= build_folder_dropdown($children, $parents . rawurlencode($name) . '/', $excludes);
+				if (count($children) > 0)
+				{
+					$return .= build_folder_dropdown($children, $parents . rawurlencode($name) . '/', $excludes, $select);
+				}
 			}
 			
 		}
@@ -92,7 +97,7 @@ if ( ! function_exists('build_directory_map'))
 
 		return str_replace($bad, $good, $str);
 	}
-	function prep_url($str) {
+	function prep_cloud_url($str) {
 		$str = rawurlencode(reverse_filter_uri($str));
 		
 		return $str;

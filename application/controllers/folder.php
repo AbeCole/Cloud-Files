@@ -10,120 +10,207 @@ class Folder extends CI_Controller {
 		
 		$this->users_model->logged_in();
 	}
-	public function delete($folder = '') 
-	{
-		$segs = $this->uri->segment_array();
-		
-		$parent = '';
-		for ($i = 3; $i < count($segs); $i++)
-		{
-		    $parent .= $segs[$i] . '/';
-		}
-		$path = $parent . $segs[$i];
-	
-		if (($return = $this->file_model->del_folder(rawurldecode($path))) == 'success') {
-			redirect('/home/' . $parent, 'refresh');
-		} else {
-			echo 'qweqwe' . $return;
-		}
-	}
-	public function rename($folder = '') 
-	{
-		if (($name = $this->input->post('name', TRUE)) != '') {
-		
-			$path = $this->input->post('path', TRUE);
-			if (($return = $this->file_model->rename_folder($path . $this->input->post('oldname', TRUE), $path . $name)) == 'success') {
-				redirect('/home/' . $path, 'refresh');
-			} else {
-				echo 'qweqwe' . $return;
-			}
-			
-		}
-		$segs = $this->uri->segment_array();
-		
-		$parent = '';
-		for ($i = 3; $i < count($segs); $i++)
-		{
-		    $parent .= $segs[$i] . '/';
-		}
-		$path = $parent . $segs[$i];
-		
-		$data['path'] = rawurldecode($parent);
-		$data['folder'] = rawurldecode($segs[$i]);
-		$data['title'] = 'Rename Folder';
-		
-		$this->load->helper('form');
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/rename-folder', $data);
-		$this->load->view('templates/footer', $data);
-	}
 	public function move($folder = '') 
 	{
-		if (($dest = str_replace(' -> ','/',$this->input->post('destination', TRUE))) != '') {
+
+		if (($dest = $this->input->post('destination')) != '') 
+		{
 		
-			$path = $this->input->post('path', TRUE);
-			$folder = $this->input->post('folder', TRUE);
-			if (($return = $this->file_model->move_folder($folder, $path, $dest)) == 'success') {
-				redirect('/home/' . $dest, 'refresh');
-			} else {
+			$path = $this->input->post('path');
+			if ($this->input->post('cancel') == 'Cancel') 
+			{
+				
+				redirect($path, 'refresh');
+			
+			}
+			
+			$name = $this->input->post('current-name', TRUE);
+			if (($return = $this->file_model->move_folder($name, $path, $dest)) == 'success') 
+			{
+				redirect($dest, 'refresh');
+			} 
+			else 
+			{
 				echo $return;
 			}
 			
 		}
+				
 		$segs = $this->uri->segment_array();
-		
 		$parent = '';
 		for ($i = 3; $i < count($segs); $i++)
 		{
-		    $parent .= $segs[$i] . '/';
+		    $parent .= prep_cloud_url($segs[$i]) . '/';
 		}
-		$path = $parent . $segs[$i];
 		
-		$data['path'] = $parent;
 		$data['title'] = 'Move Folder';
-		$data['folder'] = $segs[$i];
+		$data['path'] = $parent;
+		$data['current_name'] = prep_cloud_url($segs[$i]);
 		$data['folders'] = $this->file_model->get_folders();
+		$data['type'] = 'folder';
 		
 		$this->load->helper('form');
 		$this->load->view('templates/header', $data);
-		$this->load->view('pages/move-folder', $data);
+		$this->load->view('pages/move', $data);
+		$this->load->view('templates/footer', $data);		
+		
+	}
+	public function rename($folder = '') 
+	{
+	
+		if (($name = $this->input->post('name', TRUE)) != '') 
+		{
+		
+			$path = $this->input->post('path');
+			if ($this->input->post('cancel') == 'Cancel') 
+			{
+				
+				redirect($path, 'refresh');
+			
+			}
+			
+			$oldname = $this->input->post('oldname', TRUE);
+			if (($return = $this->file_model->rename_folder($path, $oldname, $name)) == 'success') 
+			{
+				redirect($path, 'refresh');
+			} 
+			else 
+			{
+				$this->session->set_flashdata('error', $return);
+				redirect('/folder/rename/' . $path . $oldname . '/', 'refresh');
+			}
+			
+		}
+		
+		$segs = $this->uri->segment_array();
+		$parent = '';
+		for ($i = 3; $i < count($segs); $i++)
+		{
+		    $parent .= prep_cloud_url($segs[$i]) . '/';
+		}
+		
+		$data['title'] = 'Rename Folder';
+		$data['path'] = $parent;
+		$data['current_name'] = rawurldecode($segs[$i]);
+		$data['type'] = 'folder';
+		
+		$this->load->helper('form');
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/rename', $data);
 		$this->load->view('templates/footer', $data);
 	}
-	public function upload($dest = '') 
+	public function delete($folder = '') 
 	{
-		if (($dest = str_replace(' -> ','/',$this->input->post('destination', TRUE))) != '') {
-			
-			if ($dest == '/') $dest = '';
-			
-			$file = $this->input->post('userfile', TRUE);
+		
+		if (($folder = $this->input->post('name', TRUE)) != '') 
+		{
+		
+			$path = $this->input->post('path');
+			if ($this->input->post('cancel') == 'Cancel') 
+			{
 				
-			$path = $this->config->item('cloud_path');
-			$config['upload_path'] = $path . $dest;
-			$config['allowed_types'] = '*';
-	
-			$this->load->library('upload', $config);
-	
-			if ( ! $this->upload->do_upload())
-			{
-				$error = array('error' => $this->upload->display_errors());
-	
-				print_r($error);
+				redirect($path, 'refresh');
+			
 			}
-			else
+			
+			if (($return = $this->file_model->delete_folder($path, $folder)) == 'success') 
 			{
-				$data = array('upload_data' => $this->upload->data());
-	
-				echo 'success' . $config['upload_path'];
+				redirect($path, 'refresh');
+			} 
+			else 
+			{
+				echo $return;
 			}
 			
 		}
 		
-		$data['title'] = 'Upload File';
-		$data['folders'] = $this->file_model->get_folders();
+		$segs = $this->uri->segment_array();
+		$parent = '';
+		for ($i = 3; $i < count($segs); $i++)
+		{
+		    $parent .= prep_cloud_url($segs[$i]) . '/';
+		}
+		
+		$data['title'] = 'Delete Folder';
+		$data['path'] = $parent;
+		$data['name'] = rawurldecode($segs[$i]);
+		$data['type'] = 'folder';
 		
 		$this->load->helper('form');
 		$this->load->view('templates/header', $data);
-		$this->load->view('pages/upload', $data);
+		$this->load->view('pages/delete', $data);
+		$this->load->view('templates/footer', $data);		
+		
+	}
+	public function link($folder = '') 
+	{
+		if ($this->input->post('cancel') == 'Cancel') 
+		{
+		
+			$path = $this->input->post('path');
+			redirect($path, 'refresh');
+			
+		}
+		
+		$segs = $this->uri->segment_array();
+		$parent = '';
+		for ($i = 3; $i < count($segs); $i++)
+		{
+		    $parent .= prep_cloud_url($segs[$i]) . '/';
+		}
+		
+		$data['title'] = 'Link for ' . $segs[$i];
+		$data['path'] = $parent;
+		$data['name'] = rawurldecode($segs[$i]);
+		$data['type'] = 'folder';
+		
+		$this->load->helper('form');
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/link', $data);
+		$this->load->view('templates/footer', $data);
+		
+	}
+	public function create($dest = '') 
+	{
+		
+		if ($this->input->post('cancel') == 'Cancel') 
+		{
+		
+			$path = $this->input->post('path');
+			redirect($path, 'refresh');
+			
+		}
+		
+		if (($path = $this->input->post('path')) != '') {
+
+			$name = $this->input->post('name', TRUE);
+			
+			if (($return = $this->file_model->create_folder($path, $name)) == 'success') 
+			{
+				redirect($path, 'refresh');
+			} 
+			else 
+			{
+				$this->session->set_flashdata('error', $return);
+				redirect('/folder/create/' . $path, 'refresh');
+			}
+
+		}
+		
+		$segs = $this->uri->segment_array();
+		$parent = '';
+		for ($i = 3; $i < count($segs); $i++)
+		{
+		    $parent .= prep_cloud_url($segs[$i]) . '/';
+		}
+		
+		$data['title'] = 'Create folder';
+		$data['name'] = $segs[$i];
+		$data['path'] = $parent . prep_cloud_url($segs[$i]) . '/';
+		
+		$this->load->helper('form');
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/create', $data);
 		$this->load->view('templates/footer', $data);
 	}
 	

@@ -9,6 +9,11 @@ class Home extends CI_Controller {
 		$this->load->helper(array('url','number'));
 		
 		$this->users_model->logged_in();
+		
+		if (uri_string() == '')
+		{
+			redirect('/home/', 'refresh');
+		}
 	}
 	public function index()
 	{
@@ -23,11 +28,11 @@ class Home extends CI_Controller {
 			$data['parent'] = '';
 			for ($i = 1; $i < $crumbs; $i++)
 			{
-			    $data['parent'] .= prep_url($data['breadcrumb'][$i]) . '/';
+			    $data['parent'] .= prep_cloud_url($data['breadcrumb'][$i]) . '/';
 			}
 		}
 		
-		$data['current'] = prep_url($data['breadcrumb'][$i]);
+		$data['current'] = prep_cloud_url($data['breadcrumb'][$i]);
 		$data['title'] = ucfirst(reverse_filter_uri($data['breadcrumb'][$i]));
 		
 		$data['files'] = $this->file_model->get_files(uri_string() . '/');
