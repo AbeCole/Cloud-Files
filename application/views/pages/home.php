@@ -4,7 +4,7 @@
 		<?php 
 		$url = '';
 		for ($i = 1; $i <= count($breadcrumb); $i++) : 
-			$url .= prep_url($breadcrumb[$i]) . '/';
+			$url .= prep_cloud_url($breadcrumb[$i]) . '/';
 			if ($i > 1) echo ' -> ';
 			?>
 			<a href="<?php echo base_url() . $url; ?>"><?php echo ucfirst(rawurldecode($breadcrumb[$i])); ?></a>
@@ -13,7 +13,9 @@
 		?>
 	</p>
 	<div id="tools">
-		<a href="<?php echo base_url('file/upload' . (isset($parent) ? '/' . $parent . $current : '/')); ?>" id="upload-file">Upload File</a>
+		<a href="<?php echo base_url('folder/create/' . (isset($parent) ? $parent . $current : 'home')); ?>/" id="create-folder">Create Folder</a>
+		<a href="<?php echo base_url('file/upload/' . (isset($parent) ? $parent . $current : 'home')); ?>/" id="upload-file">Upload File</a>
+		<a href="<?php echo base_url('folder/link/' . (isset($parent) ? $parent . $current : 'home')); ?>/" class="link-folder">Get Link</a>
 	</div>
 </div> 
 <div id="cloudbrowser">
@@ -42,7 +44,8 @@
 			  	
 					$i++;
 			  		$type = get_mime_by_extension($child['name']);
-			  		$filestring .= '<tr class="' . ($i % 2 == 0 ? 'odd' : 'even') . '">
+			  		
+			  		$filestring .= '<tr class="' . ($i % 2 == 0 ? 'odd' : 'even') . ($this->session->flashdata('upload') == $child['name'] ? ' new-upload' : '') . '">
 						<td class="order">' . $i . '</td>
 						<td><a class="file-link" href="' . base_url() . 'download/' . (isset($parent) ? $parent . $current : $current) . '/' . rawurlencode($child['name']) . '">' . $child['name'] . '</a></td>
 						<td>' . ($type == '' ? substr($child['name'],-3) : $type) . '</td>
@@ -54,12 +57,15 @@
 						<td class="order"></td>
 						<td colspan="5">';
 							
-							if (isset($parent)) {
+							if (isset($parent)) 
+							{
 								$filestring .= '<a href="' . base_url() . 'file/move/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="move-file">Move</a>
 									<a href="' . base_url() . 'file/rename/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="rename-file">Rename</a>
 									<a href="' . base_url() . 'file/delete/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="delete-file">Delete</a>
 									<a href="' . base_url() . 'file/link/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="link-file">Get Link</a>';
-							} else {
+							} 
+							else 
+							{
 								$filestring .= '
 									<a href="' . base_url() . 'file/move/home/' . rawurlencode($child['name']) . '" class="move-file">Move</a>
 									<a href="' . base_url() . 'file/rename/home/' . rawurlencode($child['name']) . '" class="rename-file">Rename</a>
@@ -85,15 +91,20 @@
 						<td class="order"></td>
 						<td colspan="5">';
 							
-							if (isset($parent)) {
-								$folderstring .= '<a href="' . base_url() . 'folder/move/' . $parent . $current . rawurlencode($name) . '" class="move-folder">Move</a>
-									<a href="' . base_url() . 'folder/rename/' . $parent . $current . rawurlencode($name) . '" class="rename-folder">Rename</a>
-									<a href="' . base_url() . 'folder/delete/' . $parent . $current . rawurlencode($name) . '" class="delete-folder">Delete</a>';
-							} else {
+							if (isset($parent)) 
+							{
+								$folderstring .= '<a href="' . base_url() . 'folder/move/' . $parent . $current . '/' . rawurlencode($name) . '/" class="move-folder">Move</a>
+									<a href="' . base_url() . 'folder/rename/' . $parent . $current . '/' . rawurlencode($name) . '/" class="rename-folder">Rename</a>
+									<a href="' . base_url() . 'folder/delete/' . $parent . $current . '/' . rawurlencode($name) . '/" class="delete-folder">Delete</a>
+									<a href="' . base_url() . 'folder/link/' . $parent . $current . '/' . rawurlencode($name) . '/" class="link-folder">Get Link</a>';
+							} 
+							else 
+							{
 								$folderstring .= '
-									<a href="' . base_url() . 'folder/move/home/' . rawurlencode($name) . '" class="move-folder">Move</a>
-									<a href="' . base_url() . 'folder/rename/home/' . rawurlencode($name) . '" class="rename-folder">Rename</a>
-									<a href="' . base_url() . 'folder/delete/home/' . rawurlencode($name) . '" class="delete-folder">Delete</a>';
+									<a href="' . base_url() . 'folder/move/home/' . rawurlencode($name) . '/" class="move-folder">Move</a>
+									<a href="' . base_url() . 'folder/rename/home/' . rawurlencode($name) . '/" class="rename-folder">Rename</a>
+									<a href="' . base_url() . 'folder/delete/home/' . rawurlencode($name) . '/" class="delete-folder">Delete</a>
+									<a href="' . base_url() . 'folder/link/home/' . rawurlencode($name) . '" class="link-folder">Get Link</a>';
 							}
 							
 					$folderstring .= '</td>
