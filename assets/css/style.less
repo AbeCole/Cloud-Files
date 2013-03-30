@@ -57,6 +57,10 @@ body {
 	min-height: 100%;
 	font-size: 13px;
 }
+input, textarea {
+	font-family: 'Open Sans', sans-serif;
+	margin: 0;
+}
 #page-container {
 	padding: 30px;
 }
@@ -149,12 +153,15 @@ body {
 	}
 	#tools {
 		padding-top: 10px;
-		a {
+		a, input {
 			border: 1px solid #fff;
 			padding: 5px;
 			display: inline-block;
 			font-size: 11px;
 			text-decoration: none;
+			background: none;
+			color: #fff;
+			line-height: 1;
 		}
 	}
 	#breadcrumb {
@@ -208,7 +215,8 @@ body {
 		}
 		.edit-col {
 			border-left: none;
-			a, span {display: none;}
+			* {display: none;}
+			input {margin: 2px 0 0 5px;}
 		}
 	}
 	.folder-icon {
@@ -221,11 +229,18 @@ html.js {
 			display: none;
 		}
 		.edit-col {
-			a, span {display: inline;}
+			* {
+				float: left;
+				display: block;
+			}
 		}
 		td.edit-col {
 			border-left: 1px solid #eee;
 		}
+	}
+	#message-box {
+		position: absolute;
+		z-index: 999;
 	}
 }
 #downloadFrame {display: none;}
@@ -246,6 +261,13 @@ html.js {
 		display: block;
 		font-size: 10px;
 	}
+	h2 {
+		text-decoration: underline;
+		margin-bottom: 5px;
+	}
+	.section {
+		margin-bottom: 10px;
+	}
 }
 #message-box {
 	color: #000;
@@ -255,11 +277,39 @@ html.js {
 	right: 0px;
 	border-bottom: 1px solid #000;
 	padding: 15px 30px;
+	position: relative;
 	img {
 		float: left;
 		margin-right: 5px;
+		clear: left;
 	}
 	p {
 		line-height: 16px;
+		&.last {
+			margin-top: 10px;
+		}
 	}
+	#message-icon {
+		position: absolute;
+		bottom: -38px;
+		right: 120px;
+		background: #fff;
+		border-left: 1px solid #000;
+		border-right: 1px solid #000;
+		border-bottom: 1px solid #000;
+		border-bottom-left-radius: 3px;
+		border-bottom-right-radius: 3px;
+		height: 17px;
+		width: 17px;
+		padding: 10px;
+		z-index: 1000;
+		cursor: pointer;
+		img {
+			margin-right: 0px;
+		}
+	}
+}
+#statistics {
+	display: none;
+	margin-top: 20px;
 }

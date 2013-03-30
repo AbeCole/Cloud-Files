@@ -6,7 +6,7 @@ class Home extends CI_Controller {
 		parent::__construct();
 		$this->load->model(array('file_model'));
 		$this->load->library('session');
-		$this->load->helper(array('url','number'));
+		$this->load->helper(array('url','number','form'));
 		
 		$this->users_model->logged_in();
 		
@@ -17,7 +17,6 @@ class Home extends CI_Controller {
 	}
 	public function index()
 	{
-	
 		$data['username'] = $this->session->userdata('username');
 		$data['breadcrumb'] = $this->uri->segment_array();	
 		

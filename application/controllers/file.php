@@ -30,7 +30,9 @@ class File extends CI_Controller {
 			} 
 			else 
 			{
-				echo $return;
+			
+				$this->session->set_flashdata('errors', $return);
+				redirect($dest, 'refresh');
 			}
 			
 		}
@@ -72,7 +74,8 @@ class File extends CI_Controller {
 			} 
 			else 
 			{
-				echo $return;
+				$this->session->set_flashdata('errors', $return);
+				redirect($path, 'refresh');
 			}
 			
 		}
@@ -113,7 +116,8 @@ class File extends CI_Controller {
 			} 
 			else 
 			{
-				echo $return;
+				$this->session->set_flashdata('errors', $return);
+				redirect($path, 'refresh');
 			}
 			
 		}
@@ -189,7 +193,8 @@ class File extends CI_Controller {
 			if ( ! $this->upload->do_upload() )
 			{
 			
-				echo $this->upload->display_errors();
+				$this->session->set_flashdata('errors', $this->upload->display_errors());
+				redirect('/' . $dest, 'refresh');
 			
 			}
 			else
@@ -219,7 +224,204 @@ class File extends CI_Controller {
 		$this->load->view('templates/footer', $data);
 		
 	}
+	public function multi($file = '') 
+	{	
+	
+		$files = $this->input->post('multi-file');
+		$folders = $this->input->post('multi-folder');
+		$path = $this->input->post('path');
 		
+		if ($this->input->post('cancel') == 'Cancel')
+		{
+			redirect($path, 'refresh');
+		} 
+		else if (empty($files) && empty($folders))
+		{
+			$this->session->set_flashdata('errors', 'No files or folders were selected');
+			redirect('/' . $path, 'refresh');
+		}
+		else if ($this->input->post('multi-delete') == 'Delete Multiple')
+		{
+			$this->multi_delete($path, $files, $folders);
+		}
+		else if ($this->input->post('confirm-delete') == 'Confirm')
+		{
+			$this->multi_delete($path, $files, $folders, TRUE);
+		}
+		else if ($this->input->post('multi-download') == 'Download Multiple')
+		{
+			$this->multi_download($path, $files, $folders, TRUE);
+		}
+		
+	}
+	private function multi_delete($path = '', $files = array(), $folders = array(), $confirmed = FALSE)
+	{
+		if ($confirmed == TRUE) 
+		{
+			if (($return = $this->file_model->delete_multiple($path, $files, $folders)) == 'success') 
+			{
+				redirect($path, 'refresh');
+			} 
+			else 
+			{
+				
+				$this->session->set_flashdata('errors', $return);
+				redirect('/' . $path, 'refresh');
+				
+			}
+		}
+		
+		$data['title'] = 'Delete Multiple';
+		$data['path'] = $path;
+		$data['folders'] = $folders;
+		$data['files'] = $files;
+		
+		$this->load->helper('form');
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/delete-multi', $data);
+		$this->load->view('templates/footer', $data);
+		
+	}
+	private function multi_download($path = '', $files = array(), $folders = array())
+	{
+		
+		$this->load->library('zip');
+			
+		if ( ! empty($folders))
+		{
+			for ($i = 0; $i < count($folders); $i++) 
+			{
+			
+				$folder_info = $this->file_model->get_folder_info($path . $folders[$i] . '/');
+				
+				if (is_array($folder_info)) 
+				{
+					
+					if ($folder_info['is_empty'] == FALSE)
+					{
+						$this->zip->read_dir($folder_info['absolute_path'], FALSE);
+					}
+					else
+					{
+						$this->zip->add_dir($folders[$i]);
+					}
+					
+				} 
+				else 
+				{
+				
+					$errors[] = $folder_info;
+					
+				}
+				
+			}
+		}
+		
+		if ( ! empty($files))
+		{
+			for ($i = 0; $i < count($files); $i++) 
+			{
+				$file_info = $this->file_model->get_file_info($path . $files[$i]);
+			
+				if (is_array($file_info)) 
+				{
+					
+					$this->zip->read_file($file_info['location']);
+	
+				} 
+				else 
+				{
+				
+					$errors[] = $file_info;
+					
+				}
+			}
+		}
+			
+		$name = url_title($this->config->item('cloud_name')) . '-' . date("Y-m-d-H-i", time()) . '.zip';
+		$this->zip->download($name);
+		
+		if (isset($errors)) 
+		{
+			$this->session->set_flashdata('errors', $errors);
+			redirect($path, 'refresh');
+		}
+		
+	}
+	private function save_multi_download($path = '', $files = array(), $folders = array())
+	{
+		
+		$this->load->library('zip');
+			
+		if ( ! empty($folders))
+		{
+			for ($i = 0; $i < count($folders); $i++) 
+			{
+			
+				$folder_files = $this->file_model->get_flat_files_array($folders[$i]);
+				
+				if (is_array($folder_files))
+				{
+					if (count($folder_files) > 0)
+					{
+						foreach ($folder_files as $file) 
+						{
+							
+							$this->zip->add_data('/' . $folders[$i] . $file['relative_path'] . $file['name'], file_get_contents($file['absolute_path'] . $file['name']));
+							
+						}
+					}
+					else 
+					{
+					
+						$this->zip->add_dir($folders[$i]);
+
+					}
+	
+				} 
+				else 
+				{
+				
+					$errors[] = $folder_info; 
+					
+				}
+				
+			}
+		}
+		
+		if ( ! empty($files))
+		{
+			for ($i = 0; $i < count($files); $i++) 
+			{
+				$file_info = $this->file_model->get_file_info($path . $files[$i]);
+			
+				if (is_array($file_info)) 
+				{
+					
+					$this->zip->add_data($file_info['name'], file_get_contents($file_info['location']));
+	
+				} 
+				else 
+				{
+				
+					$errors[] = $file_info;
+					
+				}
+			}
+		}
+			
+		$path = $this->config->item('cloud_temp_path');
+		$name = url_title($this->config->item('cloud_name')) . '-' . date("Y-m-d-H-i", time()) . '.zip';
+		$this->zip->archive($path . $name); 
+		$this->zip->download($name);
+		
+		if (isset($errors)) 
+		{
+			$this->session->set_flashdata('errors', $errors);
+			redirect($path, 'refresh');
+		}
+		
+	}	
 }
 
 /* End of file file.php */

@@ -8,9 +8,22 @@
 	<script src="<?php echo $this->config->base_url('/assets/js/modernizr.js'); ?>"></script>
 </head>
 <body>
-	<?php if ( $this->session->flashdata('error') != '' ) { ?>
+	<?php if ( isset($this->session) ) {
+		if ( ($errors = $this->session->flashdata('errors')) != '' ) { ?>
 		<div id="message-box" class="error">
-			<p><img src="<?php echo base_url('assets/images/error.png'); ?>" alt="There was an error" /> <?php echo $this->session->flashdata('error'); ?></p>
+		
+			<?php if ( is_array($errors) ) { 
+				for ($i = 0; $i < count($errors); $i++) { ?>
+				
+				<p<?php if ($i == ( count($errors) - 1 ) ) echo ' class="last"'; ?>><img src="<?php echo base_url('assets/images/error.png'); ?>" alt="There was an error" /> <?php echo $errors[$i]; ?></p>
+				
+			<?php }
+			} else { ?>
+			
+				<p><img src="<?php echo base_url('assets/images/error.png'); ?>" alt="There was an error" /> <?php echo $this->session->flashdata('errors'); ?></p>
+				
+			<?php } ?>
 		</div>
-	<?php } ?>
+	<?php } 
+	} ?>
 	<div id="page-container">

@@ -20,7 +20,7 @@ $config['cloud_database']['password'] = '';
 |--------------------------------------------------------------------------
 |
 | 'cloud_name': Label your cloud system, used in various places such as the
-| login screen and 
+| login screen
 |
 | 'cloud_path': The absolute path to root directory of your cloud files
 |

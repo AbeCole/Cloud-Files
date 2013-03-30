@@ -1,5 +1,7 @@
+<?php echo form_open('file/multi'); ?>
 <div id="toolbox">
-	<h1>Welcome <?php echo $username; ?> <a href="<?php echo base_url("logout"); ?>" class="close-option">Logout</a></h1>
+	<h1>Welcome <?php echo $username; ?></h1>
+	<a href="<?php echo base_url("logout"); ?>" class="close-option">Logout</a>
 	<p id="breadcrumb">Current location: 
 		<?php 
 		$url = '';
@@ -16,6 +18,8 @@
 		<a href="<?php echo base_url('folder/create/' . (isset($parent) ? $parent . $current : 'home')); ?>/" id="create-folder">Create Folder</a>
 		<a href="<?php echo base_url('file/upload/' . (isset($parent) ? $parent . $current : 'home')); ?>/" id="upload-file">Upload File</a>
 		<a href="<?php echo base_url('folder/link/' . (isset($parent) ? $parent . $current : 'home')); ?>/" class="link-folder">Get Link</a>
+		<input type="submit" value="Delete Multiple" name="multi-delete" />
+		<input type="submit" value="Download Multiple" name="multi-download" />
 	</div>
 </div> 
 <div id="cloudbrowser">
@@ -26,7 +30,7 @@
 			<th width="25%">Type</th>
 			<th width="12%">Size</th>
 			<th>Date</th>
-			<th class="edit-col"><span>Edit</span></th>
+			<th class="edit-col" width="5%"><span>Edit</span></th>
 		</thead>
 		<?php if (isset($parent)) : ?>
  		<tr class="folder parent odd">
@@ -51,7 +55,10 @@
 						<td>' . ($type == '' ? substr($child['name'],-3) : $type) . '</td>
 						<td>' . byte_format($child['size']) . '</td>
 						<td>' . date("d/m/Y", $child['date']) . '</td>
-						<td class="edit-col"><a href=""><img src="' . base_url('/assets/images/edit.svg') . '" width="15" height="15" /></a></td>
+						<td class="edit-col">
+							<img src="' . base_url('/assets/images/edit.svg') . '" width="15" height="15" />
+							<input type="checkbox" value="' . $child['name'] . '" name="multi-file[]" />
+						</td>
 					</tr>
 					<tr class="' . ($i % 2 == 0 ? 'odd' : 'even') . ' edit-row">
 						<td class="order"></td>
@@ -85,7 +92,10 @@
 						<td></td>
 						<td></td>
 						<td></td>
-						<td class="edit-col"><a href=""><img src="' . base_url('/assets/images/edit.svg') . '" width="15" height="15" /></a></td>
+						<td class="edit-col">
+							<img src="' . base_url('/assets/images/edit.svg') . '" width="15" height="15" />
+							<input type="checkbox" value="' . $name . '" name="multi-folder[]" />
+						</td>
 					</tr>
 					<tr class="' . ($f % 2 == 0 ? 'odd' : 'even') . ' folder edit-row">
 						<td class="order"></td>
@@ -112,7 +122,9 @@
 					
 				endif; ?>
 		<?php endforeach;
-		if ($f % 2 != 0) {
+		if ($f % 2 != 0) 
+		{
+		
 			$filestring = str_replace(array('odd','even','eve2'),array('eve2','odd','even'),$filestring);
 			
 		}
@@ -120,4 +132,6 @@
 		
 	</table>
 </div>
+<input type="hidden" name="path" value="<?php echo (isset($parent) ? $parent . $current : $current) . '/'; ?>" />
+<?php echo form_close(); ?>
 <iframe id="downloadFrame"></iframe>

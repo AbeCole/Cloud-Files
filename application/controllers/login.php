@@ -56,7 +56,7 @@ class Login extends CI_Controller {
 	{
 	    $this->load->library('session');
 		$this->session->unset_userdata(array('logged_in' => '','username' => ''));
-		redirect('/', 'refresh');	
+		redirect('/login/', 'refresh');	
 	}
 }
 

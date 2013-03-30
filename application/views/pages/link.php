@@ -5,7 +5,7 @@
 <div id="content">
 
 	<?php echo form_open($type . '/link'); ?>
-	<textarea id="link-select" readonly rows="1"><?php echo base_url() . ($type == 'file' ? 'download/' . $path . $name : $path . prep_cloud_url($name) . '/'); ?></textarea>
+	<textarea id="link-select" readonly rows="1"><?php echo base_url() . ($type == 'file' ? 'download/' . $path . $name : $path); ?></textarea>
 	
 	<input type="submit" name="cancel" value="Cancel" />
 	<input type="hidden" value="<?php echo $path; ?>" name="path" />

@@ -1,7 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 if ( ! function_exists('build_directory_map'))
 {
-	function build_directory_map($source_dir, $directory_depth = 0, $hidden = FALSE)
+	function build_directory_map($source_dir, $directory_depth = 0, $hidden = FALSE, $relative_parent = '')
 	{
 		if ($fp = @opendir($source_dir))
 		{
@@ -19,11 +19,11 @@ if ( ! function_exists('build_directory_map'))
 
 				if (($directory_depth < 1 OR $new_depth > 0) && @is_dir($source_dir.$file))
 				{
-					$filedata[$file] = build_directory_map($source_dir.$file.DIRECTORY_SEPARATOR, $new_depth, $hidden);
+					$filedata[$file] = build_directory_map($source_dir.$file.DIRECTORY_SEPARATOR, $new_depth, $hidden, $relative_parent . '/' . $file);
 				}
 				else
 				{
-					$filedata[$file] = array('name' => $file, 'relative_path' => $source_dir, 'size' => filesize($source_dir.$file), 'date' => filemtime($source_dir.$file));
+					$filedata[$file] = array('name' => $file, 'relative_path' => $relative_parent . '/', 'absolute_path' => $source_dir, 'size' => filesize($source_dir.$file), 'date' => filemtime($source_dir.$file));
 				}
 			}
 

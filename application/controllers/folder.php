@@ -31,7 +31,8 @@ class Folder extends CI_Controller {
 			} 
 			else 
 			{
-				echo $return;
+				$this->session->set_flashdata('errors', $return);
+				redirect($dest, 'refresh');
 			}
 			
 		}
@@ -76,7 +77,7 @@ class Folder extends CI_Controller {
 			} 
 			else 
 			{
-				$this->session->set_flashdata('error', $return);
+				$this->session->set_flashdata('errors', $return);
 				redirect('/folder/rename/' . $path . $oldname . '/', 'refresh');
 			}
 			
@@ -119,7 +120,8 @@ class Folder extends CI_Controller {
 			} 
 			else 
 			{
-				echo $return;
+				$this->session->set_flashdata('errors', $return);
+				redirect($path, 'refresh');
 			}
 			
 		}
@@ -160,7 +162,7 @@ class Folder extends CI_Controller {
 		}
 		
 		$data['title'] = 'Link for ' . $segs[$i];
-		$data['path'] = $parent;
+		$data['path'] = $parent . prep_cloud_url($segs[$i]) . '/';
 		$data['name'] = rawurldecode($segs[$i]);
 		$data['type'] = 'folder';
 		
@@ -191,7 +193,7 @@ class Folder extends CI_Controller {
 			} 
 			else 
 			{
-				$this->session->set_flashdata('error', $return);
+				$this->session->set_flashdata('errors', $return);
 				redirect('/folder/create/' . $path, 'refresh');
 			}
 

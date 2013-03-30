@@ -28,7 +28,7 @@ class File_model extends CI_Model {
 		return $files;
 		
 	}
-	public function get_file_path($file_path = '')
+	public function get_file_info($file_path = '')
 	{
 	
 		if ($file_path == '') 
@@ -47,10 +47,61 @@ class File_model extends CI_Model {
 		else 
 		{
 			
-			return array('location' => $path, 'size' => filesize($path));
+			return array('location' => $path, 'name' => basename($path), 'size' => filesize($path));
 			
 		}
 		
+	}
+	public function get_folder_info($folder = '')
+	{
+	
+		if ($folder == '') 
+		{
+			return 'The folder requested is invalid';
+		}
+		
+		$path = $this->config->item('cloud_path') . prep_path($folder);
+		
+		if ( ! is_dir($path)) 
+		{
+			
+			return 'The folder requested could not be found';
+			
+		} 
+		else 
+		{
+		
+			$fp = opendir($path);
+			$empty = FALSE;
+			if (FALSE === ($file = readdir($fp))) $empty = TRUE;
+			closedir($fp);
+			
+			return array('name' => $folder, 'absolute_path' => $path, 'is_empty' => $empty);
+			
+		}
+		
+	}
+	public function get_flat_files_array($parent = FALSE)
+	{
+		
+		return $this->create_flat_array($this->get_files($parent));	
+		
+	}
+	private function create_flat_array($files)
+	{
+		$file_array = array();
+		foreach ($files as $file)
+		{
+			if (isset($file['name']) && isset($file['absolute_path']))
+			{
+				$file_array[] = $file;
+			}
+			else 
+			{
+				$file_array = array_merge($file_array, $this->create_flat_array($file));
+			}
+		}
+		return $file_array;
 	}
 	public function get_folders($exclude = FALSE)
 	{
@@ -151,7 +202,7 @@ class File_model extends CI_Model {
 		if ( ! is_file($path)) 
 		{
 			
-			return 'The file requested could not be found';
+			return 'The file "' . $file . '" could not be found';
 			
 		} 
 		else 
@@ -163,10 +214,96 @@ class File_model extends CI_Model {
 			}
 			else 
 			{
-				return 'There was an error deleting the file';
+				return 'There was an error deleting the file "' . $file . '"';
 			}
 			
 		}
+	}
+	public function delete_multiple($location = '', $files = array(), $folders = array())
+	{
+	
+		if ( ( ! is_array($files) && ! is_array($folders) ) || $location == '') 
+		{
+			return 'The files or folders requested are invalid';
+		}
+		
+		if ( is_array($files) ) 
+		{
+			for ($i = 0; $i < count($files); $i++)
+			{
+			
+				if (($return = $this->delete_file($location, $files[$i])) != 'success')
+				{
+					$errors[] = $return;
+				}
+					
+			}
+		}
+		
+		if ( is_array($folders) ) 
+		{
+			for ($i = 0; $i < count($folders); $i++)
+			{
+			
+				if (($return = $this->delete_folder($location, $folders[$i])) != 'success')
+				{
+					$errors[] = $return;
+				}
+					
+			}
+		}	
+			
+		if (isset($errors))
+		{
+			return $errors;
+		}
+		else 
+		{
+			return 'success';
+		}
+		
+	}
+	public function delete_files($location = '', $files = array())
+	{
+	
+		$path = $this->config->item('cloud_path');
+		if ( ! is_array($files) || $location == '') {
+			return 'The files requested are invalid';
+		}
+		
+		$path .= prep_path($location);
+		for ($i = 0; $i < count($files); $i++)
+		{
+		
+			$file_loc = $path . $files[$i];
+			
+			if ( ! is_file($file_loc)) 
+			{
+				
+				$errors[] = 'The file "' . $files[$i] . '" could not be found';
+				
+			} 
+			else 
+			{
+				
+				if ( ! unlink($file_loc))
+				{
+					$errors[] = 'There was an error while deleting the file "' . $files[$i] . '"';
+				}
+				
+			}
+				
+		}	
+			
+		if (isset($errors))
+		{
+			return $errors;
+		}
+		else 
+		{
+			return 'success';
+		}
+		
 	}
 	public function move_folder($name = '', $location = '', $dest = '')
 	{
@@ -260,7 +397,7 @@ class File_model extends CI_Model {
 		if ( ! is_dir($path)) 
 		{
 			
-			return 'The folder requested could not be found';
+			return 'The folder "' . $folder . '" could not be found';
 			
 		} 
 		else 
@@ -272,7 +409,7 @@ class File_model extends CI_Model {
 			}
 			else 
 			{
-				return 'There was an error deleting the folder';
+				return 'There was an error deleting the folder "' . $folder . '"';
 			}
 			
 		}

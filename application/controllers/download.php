@@ -15,22 +15,29 @@ class Download extends CI_Controller {
 	
 		$data['title'] = 'Download';
 		
-		$file_info = $this->file_model->get_file_path(uri_string());
+		$file_info = $this->file_model->get_file_info(uri_string());
 		
 		if (is_array($file_info)) {
 			
-			if(ini_get('zlib.output_compression')) { ini_set('zlib.output_compression', 'Off');	}
+			$file_data = file_get_contents($file_info['location']);
 			
-			$this->output
-				->set_content_type('application/force-download') // You could also use ".jpeg" which will have the full stop removed before looking in config/mimes.php
-				->set_output(file_get_contents($file_info['location']));
+			$this->load->helper('download');
+			force_download($file_info['name'], $file_data);
 			
 		} else {
 			
-			echo 'There was an error: <br />' . $file_info;
+			$this->session->set_flashdata('errors', array('There was an error whlist trying to download a file', $file_info));
 			
 		}
 	
+	}
+	private function old_download_code()
+	{	
+		if(ini_get('zlib.output_compression')) { ini_set('zlib.output_compression', 'Off');	}
+		
+		$this->output
+			->set_content_type('application/force-download') // You could also use ".jpeg" which will have the full stop removed before looking in config/mimes.php
+			->set_output(file_get_contents($file_info['location']));
 	}
 }
 
