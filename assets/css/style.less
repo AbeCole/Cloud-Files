@@ -162,6 +162,11 @@ input, textarea {
 			background: none;
 			color: #fff;
 			line-height: 1;
+			border-radius: 2px;
+			&:hover {
+				background: #fff;
+				color: #000;
+			}
 		}
 	}
 	#breadcrumb {
@@ -177,6 +182,8 @@ input, textarea {
 		border-right: 1px solid #000;
 		border-bottom: 1px solid #000;
 		border-left: 1px solid #000;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
 		thead {
 			background: #bcbcbc;
 			th {
@@ -195,6 +202,11 @@ input, textarea {
 					margin-right: 5px;
 					font-size: 11px;
 					border: 1px solid #000; 
+					border-radius: 2px;
+					&:hover {
+						background: #000;
+						color: #fff;
+					}
 				}
 			}
 			&.new-upload {
@@ -214,8 +226,7 @@ input, textarea {
 			
 		}
 		.edit-col {
-			border-left: none;
-			* {display: none;}
+			img {display: none;}
 			input {margin: 2px 0 0 5px;}
 		}
 	}
@@ -229,13 +240,16 @@ html.js {
 			display: none;
 		}
 		.edit-col {
-			* {
+			img {
 				float: left;
 				display: block;
 			}
 		}
 		td.edit-col {
 			border-left: 1px solid #eee;
+		}
+		th.edit-col input {
+			margin-left: 20px; 
 		}
 	}
 	#message-box {
@@ -312,4 +326,13 @@ html.js {
 #statistics {
 	display: none;
 	margin-top: 20px;
+}
+#screensaver {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	display: none;
+	background: url('../images/bg.png') repeat center center;
 }

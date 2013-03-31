@@ -5,6 +5,7 @@
 		</div>
 	</div><!-- #page-container -->
 <script type="text/javascript">
+var ssTimer, screensaveron = false;
 $(document).ready(function() {
 	
 	$('.file-link').on('click',function(e) {
@@ -62,8 +63,36 @@ $(document).ready(function() {
 		}, 1000 * 3);
 		
 	}
+	$('body').append('<div id="screensaver"></div>');
+	ssTimer = setTimeout(function() {
+		toggleScreensaver();
+	}, 1000 * 15);
+	$(document).on('mousemove',function() {
+		if (screensaveron) {
+			toggleScreensaver();
+		} else {
+			clearTimeout(ssTimer);
+			ssTimer = setTimeout(function() {
+				toggleScreensaver();
+			}, 1000 * 15);
+		}
+	});
+	
+	$('#cloudbrowser th.edit-col input').on('change',function() {
+		
+		console.log($(this).is(':checked'));
+	});
 	
 });
+function toggleScreensaver() {
+	if (screensaveron) {
+		$('#screensaver').fadeOut(600);
+		screensaveron = false;
+	} else {
+		$('#screensaver').fadeIn(600);
+		screensaveron = true;
+	}
+}
 </script>
 </body>
 </html>

@@ -30,7 +30,7 @@
 			<th width="25%">Type</th>
 			<th width="12%">Size</th>
 			<th>Date</th>
-			<th class="edit-col" width="5%"><span>Edit</span></th>
+			<th class="edit-col" width="5%"><input type="checkbox" value="All" name="multi-all" /></th>
 		</thead>
 		<?php if (isset($parent)) : ?>
  		<tr class="folder parent odd">

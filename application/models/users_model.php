@@ -22,7 +22,7 @@ class Users_model extends CI_Model {
 	{
 		if ( ! isset($this->db)) {
 			if ($slug == 'admin') {
-				return array('username' => 'admin', 'password' => 'letmein');
+				return array('username' => 'admin', 'password' => 'pass');
 			} else {
 				return '';
 			}

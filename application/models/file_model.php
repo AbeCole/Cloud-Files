@@ -28,6 +28,36 @@ class File_model extends CI_Model {
 		return $files;
 		
 	}
+	public function get_folder_contents($folder = '') 
+	{
+		
+		$path = $this->config->item('cloud_path');
+		$path .= prep_path($folder);
+		
+		if ( ! is_dir($path)) 
+		{
+			return 'The directory requested is invalid';
+		}
+		
+		$contents = directory_map($path, 2);
+		$folders = array(); 
+		$files = array();
+		
+		foreach($contents as $name => $content)
+		{
+			if (is_array($content))
+			{
+				$folders[] = $name;
+			}
+			else
+			{
+				$files[] = $content;
+			}
+		}
+		
+		return array('folders' => $folders, 'files' => $files);
+		
+	}
 	public function get_file_info($file_path = '')
 	{
 	
@@ -70,38 +100,11 @@ class File_model extends CI_Model {
 		} 
 		else 
 		{
-		
-			$fp = opendir($path);
-			$empty = FALSE;
-			if (FALSE === ($file = readdir($fp))) $empty = TRUE;
-			closedir($fp);
 			
-			return array('name' => $folder, 'absolute_path' => $path, 'is_empty' => $empty);
+			return array('name' => $folder, 'absolute_path' => $path);
 			
 		}
 		
-	}
-	public function get_flat_files_array($parent = FALSE)
-	{
-		
-		return $this->create_flat_array($this->get_files($parent));	
-		
-	}
-	private function create_flat_array($files)
-	{
-		$file_array = array();
-		foreach ($files as $file)
-		{
-			if (isset($file['name']) && isset($file['absolute_path']))
-			{
-				$file_array[] = $file;
-			}
-			else 
-			{
-				$file_array = array_merge($file_array, $this->create_flat_array($file));
-			}
-		}
-		return $file_array;
 	}
 	public function get_folders($exclude = FALSE)
 	{

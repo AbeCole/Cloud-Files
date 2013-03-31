@@ -230,17 +230,25 @@ class File extends CI_Controller {
 		$files = $this->input->post('multi-file');
 		$folders = $this->input->post('multi-folder');
 		$path = $this->input->post('path');
+		$multi_all = $this->input->post('multi-all');
 		
 		if ($this->input->post('cancel') == 'Cancel')
 		{
 			redirect($path, 'refresh');
 		} 
-		else if (empty($files) && empty($folders))
+		else if (empty($files) && empty($folders) && $multi_all != 'All' )
 		{
 			$this->session->set_flashdata('errors', 'No files or folders were selected');
 			redirect('/' . $path, 'refresh');
 		}
-		else if ($this->input->post('multi-delete') == 'Delete Multiple')
+		else if ($multi_all == 'All') 
+		{
+			$contents = $this->file_model->get_folder_contents($path);
+			$files = $contents['files'];
+			$folders = $contents['folders'];
+		}
+		
+		if ($this->input->post('multi-delete') == 'Delete Multiple')
 		{
 			$this->multi_delete($path, $files, $folders);
 		}
@@ -250,7 +258,7 @@ class File extends CI_Controller {
 		}
 		else if ($this->input->post('multi-download') == 'Download Multiple')
 		{
-			$this->multi_download($path, $files, $folders, TRUE);
+			$this->multi_download($path, $files, $folders, TRUE);	
 		}
 		
 	}
@@ -297,14 +305,7 @@ class File extends CI_Controller {
 				if (is_array($folder_info)) 
 				{
 					
-					if ($folder_info['is_empty'] == FALSE)
-					{
-						$this->zip->read_dir($folder_info['absolute_path'], FALSE);
-					}
-					else
-					{
-						$this->zip->add_dir($folders[$i]);
-					}
+					$this->zip->read_dir_including_empty($folder_info['absolute_path'], FALSE);
 					
 				} 
 				else 
@@ -316,7 +317,7 @@ class File extends CI_Controller {
 				
 			}
 		}
-		
+			
 		if ( ! empty($files))
 		{
 			for ($i = 0; $i < count($files); $i++) 
@@ -348,80 +349,6 @@ class File extends CI_Controller {
 		}
 		
 	}
-	private function save_multi_download($path = '', $files = array(), $folders = array())
-	{
-		
-		$this->load->library('zip');
-			
-		if ( ! empty($folders))
-		{
-			for ($i = 0; $i < count($folders); $i++) 
-			{
-			
-				$folder_files = $this->file_model->get_flat_files_array($folders[$i]);
-				
-				if (is_array($folder_files))
-				{
-					if (count($folder_files) > 0)
-					{
-						foreach ($folder_files as $file) 
-						{
-							
-							$this->zip->add_data('/' . $folders[$i] . $file['relative_path'] . $file['name'], file_get_contents($file['absolute_path'] . $file['name']));
-							
-						}
-					}
-					else 
-					{
-					
-						$this->zip->add_dir($folders[$i]);
-
-					}
-	
-				} 
-				else 
-				{
-				
-					$errors[] = $folder_info; 
-					
-				}
-				
-			}
-		}
-		
-		if ( ! empty($files))
-		{
-			for ($i = 0; $i < count($files); $i++) 
-			{
-				$file_info = $this->file_model->get_file_info($path . $files[$i]);
-			
-				if (is_array($file_info)) 
-				{
-					
-					$this->zip->add_data($file_info['name'], file_get_contents($file_info['location']));
-	
-				} 
-				else 
-				{
-				
-					$errors[] = $file_info;
-					
-				}
-			}
-		}
-			
-		$path = $this->config->item('cloud_temp_path');
-		$name = url_title($this->config->item('cloud_name')) . '-' . date("Y-m-d-H-i", time()) . '.zip';
-		$this->zip->archive($path . $name); 
-		$this->zip->download($name);
-		
-		if (isset($errors)) 
-		{
-			$this->session->set_flashdata('errors', $errors);
-			redirect($path, 'refresh');
-		}
-		
-	}	
 }
 
 /* End of file file.php */

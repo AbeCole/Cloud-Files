@@ -17,6 +17,7 @@ class Home extends CI_Controller {
 	}
 	public function index()
 	{
+		
 		$data['username'] = $this->session->userdata('username');
 		$data['breadcrumb'] = $this->uri->segment_array();	
 		
