@@ -51,7 +51,7 @@
 			  		
 			  		$filestring .= '<tr class="' . ($i % 2 == 0 ? 'odd' : 'even') . ($this->session->flashdata('upload') == $child['name'] ? ' new-upload' : '') . '">
 						<td class="order">' . $i . '</td>
-						<td><a class="file-link" href="' . base_url() . 'download/' . (isset($parent) ? $parent . $current : $current) . '/' . rawurlencode($child['name']) . '">' . $child['name'] . '</a></td>
+						<td><a class="file-link" href="' . base_url() . 'download/' . (isset($parent) ? rawurldecode($parent) . rawurldecode($current) : $current) . '/' . rawurlencode($child['name']) . '">' . $child['name'] . '</a></td>
 						<td>' . ($type == '' ? substr($child['name'],-3) : $type) . '</td>
 						<td>' . byte_format($child['size']) . '</td>
 						<td>' . date("d/m/Y", $child['date']) . '</td>
@@ -66,14 +66,15 @@
 							
 							if (isset($parent)) 
 							{
-								$filestring .= '<a href="' . base_url() . 'file/move/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="move-file">Move</a>
+								$filestring .= '<a href="' . base_url() . 'download/' . $parent . rawurldecode($current) . '/' . rawurlencode($child['name']) . '" class="download-file">Download</a>
+									<a href="' . base_url() . 'file/move/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="move-file">Move</a>
 									<a href="' . base_url() . 'file/rename/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="rename-file">Rename</a>
 									<a href="' . base_url() . 'file/delete/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="delete-file">Delete</a>
 									<a href="' . base_url() . 'file/link/' . $parent . $current . '/' . rawurlencode($child['name']) . '" class="link-file">Get Link</a>';
 							} 
 							else 
 							{
-								$filestring .= '
+								$filestring .= '<a href="' . base_url() . 'download/' . $current . '/' . rawurlencode($child['name']) . '" class="download-file">Download</a>
 									<a href="' . base_url() . 'file/move/home/' . rawurlencode($child['name']) . '" class="move-file">Move</a>
 									<a href="' . base_url() . 'file/rename/home/' . rawurlencode($child['name']) . '" class="rename-file">Rename</a>
 									<a href="' . base_url() . 'file/delete/home/' . rawurlencode($child['name']) . '" class="delete-file">Delete</a>
@@ -88,7 +89,7 @@
 					$f++;
 					$folderstring .= '<tr class="' . ($f % 2 == 0 ? 'odd' : 'even') . ' folder">
 						<td class="order"><img src="' . base_url('/assets/images/folder.svg') . '" width="15" height="15" /></td>
-						<td><a href="' . base_url() . (isset($parent) ? $parent . $current : $current) . '/' . rawurlencode($name) . '/">' . $name . '</a></td>
+						<td><a href="' . base_url() . (isset($parent) ? $parent . rawurldecode($current) : $current) . '/' . rawurlencode($name) . '/">' . $name . '</a></td>
 						<td></td>
 						<td></td>
 						<td></td>

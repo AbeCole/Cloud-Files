@@ -92,8 +92,8 @@ if ( ! function_exists('build_directory_map'))
 	function reverse_filter_uri($str)
 	{
 		// Convert entities to programatic characters
-		$good	= array('$',		'(',		')',		'%28',		'%29',		' ');
-		$bad	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;',	'%20');
+		$good	= array('$',		'(',		')',		'%28',		'%29',		' ',	'%');
+		$bad	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;',	'%20',	'%25');
 
 		return str_replace($bad, $good, $str);
 	}

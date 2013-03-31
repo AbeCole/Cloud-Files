@@ -7,7 +7,7 @@
 	<script src="<?php echo $this->config->base_url('/assets/js/jquery.js'); ?>"></script>
 	<script src="<?php echo $this->config->base_url('/assets/js/modernizr.js'); ?>"></script>
 </head>
-<body>
+<body<?php if (isset($login)) echo ' class="login"'; ?>>
 	<?php if ( isset($this->session) ) {
 		if ( ($errors = $this->session->flashdata('errors')) != '' ) { ?>
 		<div id="message-box" class="error">

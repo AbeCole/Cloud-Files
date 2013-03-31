@@ -3,6 +3,8 @@ Cloud-Files
 
 To-Do:
 
+Fix downloads and rawurlencoding.
+
 1. Javascript Enable all features.
 
 2. AJAX load sub folders and feature returns.

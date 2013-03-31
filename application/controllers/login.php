@@ -47,6 +47,7 @@ class Login extends CI_Controller {
 				$data['error'] = "Sorry, We couldn't find a user with those details";
 			}			
 		}
+		$data['login'] = TRUE;
 		$this->load->view('templates/header', $data);
 		$this->load->view('pages/login', $data);
 		$this->load->view('templates/footer', $data);
